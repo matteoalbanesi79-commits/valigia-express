@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://matteoalbanesi79-commits.github.io/valigia-express/sitemap.xml
