@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valigia Express — la valigia si fa da sola (quasi)</title>
+<meta name="description" content="Scrivi dove vai e l'AI del tuo iPhone prepara la valigia: meteo vero, consigli da local, zero account e zero server. 4 MB di app, fatta con cura.">
+<style>
+  :root {
+    --ink: #1A2647;
+    --ink-deep: #121B33;
+    --petrol: #086478;
+    --petrol-soft: #0a7d96;
+    --stamp-red: #B33838;
+    --paper: #F4F3EF;
+    --card: #FFFFFF;
+    --text: #22304F;
+    --muted: #6B7690;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: var(--paper);
+    color: var(--text);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+  .mono { font-family: "SF Mono", ui-monospace, Menlo, monospace; letter-spacing: .12em; }
+
+  /* ================= ANIMAZIONI ================= */
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes floaty {
+    0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+    50%      { transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 2deg)); }
+  }
+  @keyframes fly {
+    from { offset-distance: 0%; opacity: 0; }
+    6%   { opacity: 1; }
+    94%  { opacity: 1; }
+    to   { offset-distance: 100%; opacity: 0; }
+  }
+  @keyframes dashmove {
+    to { stroke-dashoffset: -400; }
+  }
+  @keyframes bob {
+    0%, 100% { transform: rotate(3deg) translateY(0); }
+    50%      { transform: rotate(2.2deg) translateY(-8px); }
+  }
+
+  /* comparsa allo scroll */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
+    transition-delay: var(--d, 0s);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+
+  /* ================= HERO ================= */
+  .hero {
+    background: linear-gradient(140deg, var(--petrol) 0%, var(--ink) 55%, var(--ink-deep) 100%);
+    color: #fff;
+    padding: 76px 24px 120px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* rotta tratteggiata sullo sfondo */
+  .route-svg {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    pointer-events: none; opacity: .35;
+  }
+  .route-svg path {
+    fill: none; stroke: #fff; stroke-width: 2;
+    stroke-dasharray: 10 12; stroke-linecap: round;
+    animation: dashmove 18s linear infinite;
+  }
+  /* l'aereo che percorre la rotta */
+  .plane {
+    position: absolute; top: 0; left: 0;
+    font-size: 26px; pointer-events: none; z-index: 1;
+    offset-path: path('M -60 240 Q 520 30 1500 200');
+    offset-rotate: auto 45deg;
+    animation: fly 16s linear infinite;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
+  }
+
+  .hero-inner {
+    max-width: 1040px; margin: 0 auto;
+    display: flex; align-items: center; gap: 56px; flex-wrap: wrap;
+    position: relative; z-index: 2;
+  }
+  .hero-copy { flex: 1 1 400px; }
+  .hero-copy > * { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-copy > *:nth-child(1) { animation-delay: .05s }
+  .hero-copy > *:nth-child(2) { animation-delay: .15s }
+  .hero-copy > *:nth-child(3) { animation-delay: .28s }
+  .hero-copy > *:nth-child(4) { animation-delay: .38s }
+  .hero-copy > *:nth-child(5) { animation-delay: .48s }
+  .hero-copy > *:nth-child(6) { animation-delay: .58s }
+
+  .hero-icon {
+    width: 84px; height: 84px; border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    margin-bottom: 26px;
+  }
+  .hero h1 { font-size: clamp(2.3rem, 5vw, 3.4rem); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; }
+  .hero p.tag { font-size: 1.14rem; margin: 18px 0 8px; color: #CFE3EA; max-width: 30em; }
+  .hero p.sub { font-size: .9rem; color: #8FA6C4; margin-bottom: 30px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: 14px 26px; border-radius: 999px;
+    font-weight: 700; font-size: 1rem; text-decoration: none;
+    transition: transform .2s cubic-bezier(.2,.7,.2,1), box-shadow .2s;
+  }
+  .btn:hover { transform: translateY(-3px) scale(1.02); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn-primary { background: #fff; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
+  .btn-primary:hover { box-shadow: 0 14px 34px rgba(0,0,0,.4); }
+  .btn-ghost { border: 1.5px solid rgba(255,255,255,.5); color: #fff; }
+  .cta-note { font-size: .8rem; color: #8FA6C4; margin-top: 14px; }
+
+  .hero-shot { flex: 0 1 320px; margin: 0 auto; animation: rise 1s .3s cubic-bezier(.2,.7,.2,1) both; }
+  .hero-shot img.phone {
+    width: 300px; border-radius: 38px;
+    box-shadow: 0 30px 60px rgba(0,0,0,.45);
+    display: block;
+    animation: bob 7s ease-in-out infinite;
+    transition: transform .4s cubic-bezier(.2,.7,.2,1);
+  }
+  .hero-shot img.phone:hover { transform: rotate(0deg) scale(1.03); animation-play-state: paused; }
+
+  /* francobolli */
+  .stamp {
+    position: absolute; color: var(--stamp-red);
+    width: 91px; height: 104px; text-align: center;
+    padding: 12px 6px;
+    background-color: transparent;
+    background-image: radial-gradient(#fff 9.5px, rgba(255,255,255,0) 10px);
+    background-size: 13px 13px;
+    background-position: -6.5px -6.5px;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,.28));
+    user-select: none;
+    animation: floaty 7s ease-in-out infinite;
+    z-index: 1;
+  }
+  .stamp .top { font-size: 7px; font-weight: 700; letter-spacing: .18em; opacity: .75; }
+  .stamp .mark { font-size: 36px; line-height: 1.3; }
+  .stamp .city { font-size: 9px; font-weight: 800; letter-spacing: .1em; }
+  .stamp .val { position: absolute; top: 10px; right: 12px; font-size: 10px; font-weight: 900; font-family: Georgia, serif; opacity: .7; }
+  .s1 { top: 44px; right: 4%; --r: -10deg; animation-delay: 0s; }
+  .s2 { bottom: 64px; left: 3%; --r: 7deg; animation-delay: 2.3s; }
+  .s3 { top: 56%; right: 31%; --r: -5deg; opacity: .35; animation-delay: 4.1s; display: none; }
+  @media (min-width: 900px) { .s3 { display: block; } }
+
+  /* ================= SEZIONI ================= */
+  section { padding: 76px 24px; }
+  .wrap { max-width: 1040px; margin: 0 auto; }
+  .kicker { font-size: .75rem; font-weight: 700; letter-spacing: .18em; color: var(--petrol); text-transform: uppercase; }
+  h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); font-weight: 800; letter-spacing: -.01em; margin: 8px 0 14px; color: var(--ink); }
+  .lead { color: var(--muted); max-width: 44em; }
+
+  /* storia */
+  .story { background: #fff; }
+  .story blockquote {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 600; color: var(--ink);
+    max-width: 30em; line-height: 1.5;
+  }
+  .story blockquote em { color: var(--petrol); font-style: normal; }
+  .story .firma { margin-top: 22px; color: var(--muted); font-size: .95rem; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px; margin-top: 40px;
+  }
+  .card {
+    background: var(--card); border-radius: 20px; padding: 26px 24px;
+    border: 1px solid rgba(26,38,71,.06);
+    transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s;
+  }
+  .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(18,27,51,.12); }
+  .card .emoji { font-size: 1.9rem; display: block; margin-bottom: 12px; transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+  .card:hover .emoji { transform: scale(1.25) rotate(-6deg); }
+  .card h3 { font-size: 1.05rem; margin-bottom: 6px; color: var(--ink); }
+  .card p { font-size: .92rem; color: var(--muted); }
+
+  /* screenshots */
+  .shots { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
+  .shots figure { text-align: center; }
+  .shots img {
+    width: 240px; border-radius: 30px; box-shadow: 0 18px 44px rgba(18,27,51,.22);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .shots figure:hover img { transform: translateY(-8px) scale(1.02); }
+  .shots figcaption { font-size: .85rem; color: var(--muted); margin-top: 12px; }
+
+  /* install */
+  .install { background: var(--ink); color: #fff; position: relative; overflow: hidden; }
+  .install .kicker { color: #7FD1E0; }
+  .install h2 { color: #fff; }
+  .install .lead { color: #A9B7D0; }
+  .steps { counter-reset: step; margin-top: 36px; display: grid; gap: 14px; max-width: 640px; }
+  .step {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 16px; padding: 18px 20px 18px 64px; position: relative; font-size: .95rem;
+    transition: background .3s, transform .3s;
+  }
+  .step:hover { background: rgba(255,255,255,.1); transform: translateX(6px); }
+  .step::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--petrol-soft); color: #fff; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; font-size: .9rem;
+  }
+  .step a { color: #7FD1E0; }
+  .badge {
+    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    background: rgba(127,209,224,.15); color: #7FD1E0; border: 1px solid rgba(127,209,224,.4);
+    padding: 4px 12px; border-radius: 999px; margin-left: 10px; vertical-align: middle;
+  }
+
+  /* privacy */
+  .privacy-strip {
+    display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;
+    margin-top: 40px; text-align: center;
+  }
+  .stat .n { font-size: 2.4rem; font-weight: 800; color: var(--petrol); }
+  .stat .l { font-size: .85rem; color: var(--muted); }
+
+  footer {
+    padding: 40px 24px 60px; text-align: center;
+    font-size: .85rem; color: var(--muted);
+  }
+  footer .mono { font-size: .7rem; letter-spacing: .2em; color: var(--petrol); }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="route-svg" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M -60 240 Q 520 30 1500 200"/>
+  </svg>
+  <span class="plane" aria-hidden="true">✈️</span>
+
+  <div class="stamp s1" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">🗼</div><div class="city">TOKYO</div></div>
+  <div class="stamp s2" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">⚜️</div><div class="city">PARIGI</div></div>
+  <div class="stamp s3" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">🗽</div><div class="city">NEW YORK</div></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <img class="hero-icon" src="img/icon.png" alt="Icona di Valigia Express">
+      <h1>La valigia si fa da sola.<br>Beh, quasi.</h1>
+      <p class="tag">Tu dici dove vai — o inquadri la carta d'imbarco. Il tuo iPhone controlla che tempo farà davvero e ti prepara la lista giusta: concreta, personale, senza "abbigliamento adeguato".</p>
+      <p class="sub mono">TUTTO SUL TUO TELEFONO · NIENTE ACCOUNT · NIENTE SERVER · 4 MB</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#installa">📲 Portala con te</a>
+        <a class="btn btn-ghost" href="#funzioni">Cosa sa fare</a>
+      </div>
+      <p class="cta-note">Presto su TestFlight · oggi via sideloading (.ipa, 932 KB — sì, meno di una foto)</p>
+    </div>
+    <div class="hero-shot">
+      <img class="phone" src="img/screen-home.png" alt="Schermata principale di Valigia Express: la carta d'imbarco da compilare">
+    </div>
+  </div>
+</header>
+
+<!-- ============ STORIA ============ -->
+<section class="story">
+  <div class="wrap reveal">
+    <div class="kicker">Perché esiste</div>
+    <blockquote>
+      «Ogni viaggio inizia allo stesso modo: sono le 23:47, la sveglia è alle 5, e tu sei lì a fissare la valigia aperta pensando <em>"sto dimenticando qualcosa, lo sento"</em>.<br>
+      Ecco. Volevo smettere di fare quella scena.»
+    </blockquote>
+    <p class="firma">— Matteo, che una volta è partito per Londra senza caricabatterie</p>
+  </div>
+</section>
+
+<!-- ============ FUNZIONI ============ -->
+<section id="funzioni">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Cosa sa fare</div>
+      <h2>Più di una lista. Un compagno di viaggio.</h2>
+      <p class="lead">Dal momento in cui sai dove vai, a quando torni con il timbro sul passaporto. E in mezzo, tutto quello che serve davvero.</p>
+    </div>
+    <div class="grid">
+      <div class="card reveal" style="--d:.0s"><span class="emoji">✨</span><h3>La lista che ti conosce</h3><p>L'AI gira sul telefono, guarda il meteo vero e impara le tue abitudini: se non spunti mai l'ombrello, smette di proportelo.</p></div>
+      <div class="card reveal" style="--d:.06s"><span class="emoji">📷</span><h3>Zero digitazione</h3><p>Inquadri la carta d'imbarco e destinazione e date si compilano da sole. Il volo finisce pure sulla mappa.</p></div>
+      <div class="card reveal" style="--d:.12s"><span class="emoji">🗺️</span><h3>Una mappa che capisce</h3><p>Cerchi "posti nerd" a Osaka e li trova davvero. Rotta di volo animata e attrazioni intorno al tuo hotel.</p></div>
+      <div class="card reveal" style="--d:.18s"><span class="emoji">🗣️</span><h3>Un amico del posto</h3><p>Gli chiedi a voce dove mangiare e ti risponde come un local: la trattoria vera, non la trappola coi menù plastificati.</p></div>
+      <div class="card reveal" style="--d:.0s"><span class="emoji">📮</span><h3>Ogni città, il suo vestito</h3><p>Scrivi Tokyo e tutto diventa rosso carpa con la Tokyo Tower e i francobolli. Parigi? Blu notte e giglio dorato.</p></div>
+      <div class="card reveal" style="--d:.06s"><span class="emoji">🛂</span><h3>Il passaporto dei ricordi</h3><p>Ogni viaggio lascia un timbro. Li collezioni, li ritocchi, e riapri la valigia di Lisbona quando ci torni.</p></div>
+      <div class="card reveal" style="--d:.12s"><span class="emoji">🔊</span><h3>Anche a mani occupate</h3><p>"Hey Siri, cosa metto in valigia?" — e la lista te la legge il HomePod mentre stiri le camicie.</p></div>
+      <div class="card reveal" style="--d:.18s"><span class="emoji">✈️</span><h3>Il countdown è servito</h3><p>Sulla Lock Screen e nella Dynamic Island: quanto manca alla partenza e quanti oggetti mancano in valigia.</p></div>
+      <div class="card reveal" style="--d:.24s"><span class="emoji">📡</span><h3>Fatta per l'estero</h3><p>Risparmio dati, cache offline, traduttore che funziona in aereo. E parla italiano, inglese e giapponese.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREENSHOT ============ -->
+<section style="padding-top: 0;">
+  <div class="wrap">
+    <div class="shots">
+      <figure class="reveal" style="--d:.0s"><img src="img/screen-home.png" alt="La carta d'imbarco da compilare"><figcaption>La carta d'imbarco</figcaption></figure>
+      <figure class="reveal" style="--d:.1s"><img src="img/screen-novita.png" alt="Il foglio Novità a ogni aggiornamento"><figcaption>Le novità, a ogni aggiornamento</figcaption></figure>
+      <figure class="reveal" style="--d:.2s"><img src="img/screen-giappone.png" alt="L'app in giapponese"><figcaption>日本語も話せます 🇯🇵</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSTALLA ============ -->
+<section class="install" id="installa">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Installazione</div>
+      <h2>Portala con te (senza App Store)</h2>
+      <p class="lead">Su iPhone le app fuori dall'App Store chiedono un passaggio in più. Nessun trucco, nessuna promessa strana: ecco le due strade, spiegate come si deve.</p>
+    </div>
+
+    <h3 class="reveal" style="margin-top:40px; font-size:1.1rem;">🚀 TestFlight <span class="badge">IN ARRIVO</span></h3>
+    <p class="reveal" style="color:#A9B7D0; font-size:.95rem; max-width:40em; margin-top:6px;">
+      Il modo semplice: un link, due tap, fatto. Si accende appena l'app entra nel programma sviluppatori Apple — torna a trovarci.
+    </p>
+
+    <h3 class="reveal" style="margin-top:36px; font-size:1.1rem;">🛠️ Sideloading (disponibile ora, per chi mastica un po')</h3>
+    <div class="steps">
+      <div class="step reveal" style="--d:.0s">Scarica il pacchetto: <a href="ValigiaExpress-1.1.ipa" download><strong>ValigiaExpress-1.1.ipa</strong></a> — 932 KB, giuro.</div>
+      <div class="step reveal" style="--d:.07s">Sul computer installa <a href="https://altstore.io" target="_blank" rel="noopener">AltStore</a> o <a href="https://sideloadly.io" target="_blank" rel="noopener">Sideloadly</a> e collega l'iPhone.</div>
+      <div class="step reveal" style="--d:.14s">Apri l'.ipa con lo strumento scelto e accedi col tuo Apple ID: firma e installa lui.</div>
+      <div class="step reveal" style="--d:.21s">Su iPhone: Impostazioni → Generali → VPN e gestione dispositivi → autorizza. Con l'Apple ID gratuito si rinnova ogni 7 giorni.</div>
+    </div>
+    <p class="reveal" style="font-size:.8rem; color:#8FA6C4; margin-top:18px;">La generazione AI vuole un iPhone con Apple Intelligence (15 Pro o più recente, iOS 26+). Tutto il resto — scanner, mappa, guida, timbri — gira su qualsiasi iPhone con iOS 26.</p>
+  </div>
+</section>
+
+<!-- ============ PRIVACY ============ -->
+<section>
+  <div class="wrap" style="text-align:center;">
+    <div class="reveal">
+      <div class="kicker">Privacy</div>
+      <h2>I tuoi viaggi sono affari tuoi</h2>
+      <p class="lead" style="margin:0 auto;">Non c'è niente da accettare, niente da tracciare, nessun "continua con Google". Il viaggio resta tra te e il tuo iPhone — letteralmente.</p>
+    </div>
+    <div class="privacy-strip">
+      <div class="stat reveal" style="--d:.0s"><div class="n">0</div><div class="l">account richiesti</div></div>
+      <div class="stat reveal" style="--d:.08s"><div class="n">0</div><div class="l">dati raccolti</div></div>
+      <div class="stat reveal" style="--d:.16s"><div class="n">0</div><div class="l">server e analytics</div></div>
+      <div class="stat reveal" style="--d:.24s"><div class="n">4 MB</div><div class="l">tutto qui</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="mono">VALIGIA EXPRESS · VE 026</p>
+  <p style="margin-top:8px;">Fatta con ☕️ e Foundation Models · Meteo di <a href="https://open-meteo.com" style="color:var(--petrol)">Open-Meteo</a></p>
+  <p style="margin-top:4px;">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
+</footer>
+
+<script>
+  // Comparsa allo scroll (rispetta "riduci movimento")
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const targets = document.querySelectorAll('.reveal');
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    targets.forEach(el => io.observe(el));
+  }
+</script>
+
+</body>
+</html>
