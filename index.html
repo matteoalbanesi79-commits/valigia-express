@@ -32,7 +32,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Valigia Express",
-  "operatingSystem": "iOS 26",
+  "operatingSystem": "iOS 26, Android 8.0+",
   "applicationCategory": "TravelApplication",
   "description": "L'app che prepara la valigia con l'intelligenza artificiale on-device del tuo iPhone: meteo reale, scanner della carta d'imbarco, guida turistica vocale da local, passaporto con timbri. Privata per design.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -237,6 +237,37 @@
   .shots figure:hover img { transform: translateY(-8px) scale(1.02); }
   .shots figcaption { font-size: .85rem; color: var(--muted); margin-top: 12px; }
 
+  /* compatibilità */
+  .compat-card {
+    background: var(--card); border-radius: 22px; overflow: hidden;
+    border: 1px solid rgba(26,38,71,.08); margin-top: 36px;
+  }
+  .compat-table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  .compat-table th, .compat-table td {
+    padding: 13px 16px; text-align: center; border-bottom: 1px solid rgba(26,38,71,.06);
+  }
+  .compat-table td:first-child, .compat-table th:first-child {
+    text-align: left; font-weight: 600; color: var(--ink);
+  }
+  .compat-table thead th {
+    background: var(--ink); color: #fff; font-size: .95rem; padding: 16px;
+  }
+  .compat-table thead th:first-child { background: var(--ink); }
+  .compat-table tbody tr:nth-child(even) { background: rgba(26,38,71,.025); }
+  .compat-table tbody tr:last-child td { border-bottom: none; }
+  .ok { color: #1E8E3E; font-weight: 700; }
+  .soon {
+    display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+    color: #9A6B00; background: rgba(255,190,60,.18); border: 1px solid rgba(255,190,60,.45);
+    padding: 3px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .na { color: var(--muted); }
+  .compat-note { font-size: .8rem; color: var(--muted); margin-top: 14px; }
+  @media (max-width: 560px) {
+    .compat-table { font-size: .8rem; }
+    .compat-table th, .compat-table td { padding: 10px 8px; }
+  }
+
   /* install */
   .install { background: var(--ink); color: #fff; position: relative; overflow: hidden; }
   .install .kicker { color: #7FD1E0; }
@@ -352,6 +383,48 @@
       <figure class="reveal" style="--d:.2s"><img src="img/screen-giappone.png" alt="L'app in giapponese"><figcaption>日本語も話せます 🇯🇵</figcaption></figure>
       <figure class="reveal" style="--d:.3s"><img src="img/screen-android.png" alt="L'app su Android"><figcaption>Anche su Android 🤖</figcaption></figure>
     </div>
+  </div>
+</section>
+
+<!-- ============ COMPATIBILITÀ ============ -->
+<section id="compatibilita" style="padding-top: 20px;">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Compatibilità</div>
+      <h2>Cosa funziona, e dove</h2>
+      <p class="lead">Niente asterischi nascosti: ecco esattamente cosa fa ogni versione oggi. La versione iPhone è completa; quella Android è giovane e cresce a vista d'occhio.</p>
+    </div>
+
+    <div class="compat-card reveal">
+      <table class="compat-table">
+        <thead>
+          <tr>
+            <th>Funzione</th>
+            <th>🍏 iPhone</th>
+            <th>🤖 Android</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Sistema minimo</td><td>iOS 26</td><td>Android 8.0</td></tr>
+          <tr><td>Lista valigia con AI on-device</td><td>iPhone 15 Pro o più recente<br><span class="na" style="font-size:.78rem">(Apple Intelligence)</span></td><td><span class="soon">IN ARRIVO</span><br><span class="na" style="font-size:.78rem">Pixel 8+ / Galaxy S24+ (Gemini Nano)</span></td></tr>
+          <tr><td>Meteo reale della destinazione</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>Scanner carta d'imbarco</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>Temi e colori per città</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
+          <tr><td>Sfondo a francobolli</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Mappa con rotta e ricerca</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Assistente di viaggio (AI)</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Passaporto con timbri</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Kit di viaggio (SOS, Uber, hotel, Airbnb)</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Widget e Lock Screen</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>"Hey Siri, cosa metto in valigia?"</td><td><span class="ok">✓</span> <span class="na" style="font-size:.78rem">(+ HomePod, Watch, CarPlay)</span></td><td><span class="na">—</span></td></tr>
+          <tr><td>Traduttore offline</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
+          <tr><td>Lingue</td><td>🇮🇹 🇬🇧 🇯🇵</td><td>🇮🇹</td></tr>
+          <tr><td>Peso dell'app</td><td>~4 MB</td><td>~39 MB</td></tr>
+          <tr><td>Versione attuale</td><td>1.1 · completa</td><td>1.0 · anteprima</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="compat-note reveal">Su iPad funziona tutto come su iPhone (stessa app). Su Android, "in arrivo" significa che il pezzo esiste già su iPhone e verrà portato: niente vaporware.</p>
   </div>
 </section>
 
