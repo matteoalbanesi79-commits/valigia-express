@@ -268,6 +268,37 @@
     .compat-table th, .compat-table td { padding: 10px 8px; }
   }
 
+  /* patch / changelog */
+  .changelog { margin-top: 36px; max-width: 720px; }
+  .release { display: flex; gap: 18px; padding-bottom: 26px; position: relative; }
+  .release:not(:last-child)::before {
+    content: ""; position: absolute; left: 33px; top: 40px; bottom: 0;
+    width: 2px; background: rgba(26,38,71,.1);
+  }
+  .release-badge {
+    flex: 0 0 auto; width: 68px; height: 30px; border-radius: 999px;
+    background: var(--petrol); color: #fff; font-weight: 800; font-size: .9rem;
+    display: flex; align-items: center; justify-content: center; margin-top: 4px;
+    box-shadow: 0 4px 12px rgba(8,100,120,.3);
+  }
+  .release-badge.old { background: #9AA6BC; box-shadow: none; }
+  .release-body h3 { font-size: 1.05rem; color: var(--ink); margin-bottom: 2px; }
+  .release-body .date { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
+  .release-body ul { margin: 0; padding-left: 18px; }
+  .release-body li { font-size: .92rem; color: var(--text); margin-bottom: 4px; }
+
+  /* bug report */
+  .bug { background: linear-gradient(140deg, #B33838 0%, #7A2020 100%); color: #fff; }
+  .bug .kicker { color: #FFC9C9; }
+  .bug h2 { color: #fff; }
+  .bug p { color: #FBE3E3; max-width: 42em; }
+  .bug .btn-report {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+    background: #fff; color: #7A2020; padding: 14px 26px; border-radius: 999px;
+    font-weight: 700; text-decoration: none; transition: transform .2s, box-shadow .2s;
+  }
+  .bug .btn-report:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+
   /* install */
   .install { background: var(--ink); color: #fff; position: relative; overflow: hidden; }
   .install .kicker { color: #7FD1E0; }
@@ -420,7 +451,7 @@
           <tr><td>Traduttore offline</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
           <tr><td>Lingue</td><td>🇮🇹 🇬🇧 🇯🇵</td><td>🇮🇹</td></tr>
           <tr><td>Peso dell'app</td><td>~4 MB</td><td>~39 MB</td></tr>
-          <tr><td>Versione attuale</td><td>1.1 · completa</td><td>1.0 · anteprima</td></tr>
+          <tr><td>Versione attuale</td><td>1.2 · completa</td><td>1.0 · anteprima</td></tr>
         </tbody>
       </table>
     </div>
@@ -458,6 +489,79 @@
       <div class="step reveal" style="--d:.21s">Su iPhone: Impostazioni → Generali → VPN e gestione dispositivi → autorizza. Con l'Apple ID gratuito si rinnova ogni 7 giorni.</div>
     </div>
     <p class="reveal" style="font-size:.8rem; color:#8FA6C4; margin-top:18px;">La generazione AI vuole un iPhone con Apple Intelligence (15 Pro o più recente, iOS 26+). Tutto il resto — scanner, mappa, guida, timbri — gira su qualsiasi iPhone con iOS 26.</p>
+  </div>
+</section>
+
+<!-- ============ AGGIORNAMENTI / PATCH ============ -->
+<section id="aggiornamenti">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Aggiornamenti</div>
+      <h2>Cosa è cambiato, patch dopo patch</h2>
+      <p class="lead">L'app cresce spesso. Qui trovi cosa porta ogni versione — le più recenti in alto.</p>
+    </div>
+
+    <div class="changelog">
+      <div class="release reveal">
+        <div class="release-badge">1.2</div>
+        <div class="release-body">
+          <h3>Assistente & persistenza</h3>
+          <div class="date">iOS · luglio 2026</div>
+          <ul>
+            <li>🎙️ L'assistente torna a parlare e può <strong>modificare la valigia</strong> per te ("aggiungi il costume")</li>
+            <li>🧰 Un unico hub "Assistente & servizi": SOS, trasporti, hotel e traduttore insieme</li>
+            <li>💾 La tua valigia <strong>non si perde più</strong> alla riapertura, spunte comprese</li>
+            <li>🧳 Valigia in un'unica lista ordinata, più facile da spuntare</li>
+            <li>🏨 Scegli tu se aprire Booking o Airbnb</li>
+            <li>👋 Le abitudini si impostano subito, al primo avvio</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="release reveal" style="--d:.08s">
+        <div class="release-badge old">1.1</div>
+        <div class="release-body">
+          <h3>Il mondo intero</h3>
+          <div class="date">iOS · luglio 2026</div>
+          <ul>
+            <li>📮 Sfondi a francobolli e temi colore per città</li>
+            <li>📡 Risparmio dati e cache offline per l'estero</li>
+            <li>✈️ Countdown e valigia sulla Lock Screen e Dynamic Island</li>
+            <li>🇮🇹 🇬🇧 🇯🇵 Interfaccia e AI in tre lingue</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="release reveal" style="--d:.16s">
+        <div class="release-badge old">1.0</div>
+        <div class="release-body">
+          <h3>Il primo decollo</h3>
+          <div class="date">luglio 2026</div>
+          <ul>
+            <li>✨ Lista valigia con l'AI on-device e meteo reale</li>
+            <li>📷 Scanner della carta d'imbarco, mappa, guida da local, passaporto con timbri</li>
+            <li>🤖 Prima versione Android (anteprima)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEGNALA UN BUG ============ -->
+<section class="bug" id="segnala">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Trovato qualcosa che non va?</div>
+      <h2>Segnala un bug</h2>
+      <p>Se qualcosa si comporta male o hai un'idea, scrivilo: ogni segnalazione aiuta a rendere l'app migliore. Si apre una scheda già pronta da compilare — di' cosa è successo, su che telefono e quale versione. Niente dati personali richiesti.</p>
+      <a class="btn-report reveal"
+         href="https://github.com/matteoalbanesi79-commits/valigia-express/issues/new?labels=bug&title=Bug%3A%20&body=%2A%2ACosa%20%C3%A8%20successo%3A%2A%2A%0A%0A%0A%2A%2ACosa%20ti%20aspettavi%3A%2A%2A%0A%0A%0A%2A%2APassi%20per%20riprodurlo%3A%2A%2A%0A1.%20%0A2.%20%0A%0A---%0ATelefono%20(es.%20iPhone%2015%20%2F%20Pixel%208)%3A%20%0AVersione%20app%3A%20"
+         target="_blank" rel="noopener">
+        🐞 Segnala un bug su GitHub
+      </a>
+      <p style="font-size:.8rem; margin-top:16px; color:#F3C9C9;">Serve un account GitHub gratuito. È anche l'elenco pubblico dei bug noti e di cosa è in lavorazione.</p>
+    </div>
   </div>
 </section>
 
