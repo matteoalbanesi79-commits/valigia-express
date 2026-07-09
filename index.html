@@ -333,6 +333,24 @@
   .stat .n { font-size: 2.4rem; font-weight: 800; color: var(--petrol); }
   .stat .l { font-size: .85rem; color: var(--muted); }
 
+  /* changelog */
+  .changelog { margin-top: 36px; display: grid; gap: 16px; max-width: 720px; }
+  .release {
+    background: var(--card); border: 1px solid rgba(26,38,71,.06);
+    border-radius: 18px; padding: 22px 24px;
+    display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start;
+  }
+  .release .ver {
+    font-weight: 800; color: var(--petrol); font-size: 1.05rem;
+    font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  }
+  .release ul { margin: 0; padding-left: 18px; }
+  .release li { font-size: .92rem; color: var(--muted); margin-bottom: 6px; }
+  .release li strong { color: var(--text); font-weight: 600; }
+  @media (max-width: 520px) {
+    .release { grid-template-columns: 1fr; gap: 8px; }
+  }
+
   footer {
     padding: 40px 24px 60px; text-align: center;
     font-size: .85rem; color: var(--muted);
@@ -561,6 +579,44 @@
         🐞 Segnala un bug su GitHub
       </a>
       <p style="font-size:.8rem; margin-top:16px; color:#F3C9C9;">Serve un account GitHub gratuito. È anche l'elenco pubblico dei bug noti e di cosa è in lavorazione.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHANGELOG ============ -->
+<section id="novita">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker">Novità</div>
+      <h2>Cosa è cambiato di recente</h2>
+      <p class="lead">Ogni aggiornamento dell'app finisce anche qui. Le stesse novità le trovi nel foglio "Novità" dentro l'app.</p>
+    </div>
+    <div class="changelog">
+      <div class="release reveal">
+        <div class="ver">v1.2</div>
+        <ul>
+          <li>🚗 <strong>Percorso in auto sulla strada vera</strong> — sulla mappa scegli Aereo o Auto</li>
+          <li>🚆 <strong>Scanner treni e pullman</strong> — non solo carte d'imbarco</li>
+          <li>🔍 <strong>Mappa più pulita</strong> — la rotta si toglie quando cerchi posti; pulsanti sistemati</li>
+          <li>🧹 Assistente non più duplicato: si apre dal Tasto Azione e dalla card del viaggio</li>
+        </ul>
+      </div>
+      <div class="release reveal" style="--d:.08s">
+        <div class="ver">v1.1</div>
+        <ul>
+          <li>📮 Sfondi a francobolli per città a tema (Tokyo, Parigi…)</li>
+          <li>📡 Risparmio dati e cache offline per l'estero</li>
+          <li>✈️ Countdown sulla Lock Screen e nella Dynamic Island</li>
+          <li>🌍 Interfaccia e AI in italiano, inglese e giapponese</li>
+        </ul>
+      </div>
+      <div class="release reveal" style="--d:.16s">
+        <div class="ver">v1.0</div>
+        <ul>
+          <li>🧳 Lista valigia su misura con l'AI on-device e il meteo reale</li>
+          <li>📷 Scansione della carta d'imbarco, mappa del viaggio, passaporto con timbri</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
