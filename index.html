@@ -1,646 +1,756 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Valigia Express — la valigia si fa da sola (quasi)</title>
-<meta name="description" content="Scrivi dove vai e l'AI del tuo iPhone prepara la valigia: meteo vero, consigli da local, zero account e zero server. 4 MB di app, fatta con cura.">
-
-<!-- Favicon -->
-<link rel="icon" type="image/png" href="img/icon.png">
-<link rel="apple-touch-icon" href="img/icon.png">
-
-<!-- Anteprima quando condividi il link (WhatsApp, Instagram, Telegram, X...) -->
+<meta name="description" content="App di viaggio che prepara la lista valigia su misura con l'intelligenza artificiale del telefono. Tutto sul dispositivo: niente account, niente abbonamento, niente server.">
+<meta name="theme-color" content="#0B1225">
+<meta property="og:title" content="Valigia Express">
+<meta property="og:description" content="La valigia si fa da sola. Beh, quasi.">
+<meta property="og:image" content="img/og-image.png">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Valigia Express">
-<meta property="og:title" content="Valigia Express — la valigia si fa da sola (quasi)">
-<meta property="og:description" content="L'app iOS che prepara la valigia con l'AI del tuo iPhone: meteo vero, guida da local, timbri da collezione. Zero account, zero server, 4 MB.">
-<meta property="og:url" content="https://matteoalbanesi79-commits.github.io/valigia-express/">
-<meta property="og:image" content="https://matteoalbanesi79-commits.github.io/valigia-express/img/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="it_IT">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Valigia Express — la valigia si fa da sola (quasi)">
-<meta name="twitter:description" content="L'app iOS che prepara la valigia con l'AI del tuo iPhone. Zero account, zero server, 4 MB.">
-<meta name="twitter:image" content="https://matteoalbanesi79-commits.github.io/valigia-express/img/og-image.png">
-<link rel="canonical" href="https://matteoalbanesi79-commits.github.io/valigia-express/">
+<link rel="icon" href="img/icon.png">
 
-<!-- Dati strutturati per Google -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Valigia Express",
-  "operatingSystem": "iOS 26, Android 8.0+",
-  "applicationCategory": "TravelApplication",
-  "description": "L'app che prepara la valigia con l'intelligenza artificiale on-device del tuo iPhone: meteo reale, scanner della carta d'imbarco, guida turistica vocale da local, passaporto con timbri. Privata per design.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
-  "author": { "@type": "Person", "name": "Matteo Albanesi" },
-  "inLanguage": ["it", "en", "ja"],
-  "url": "https://matteoalbanesi79-commits.github.io/valigia-express/"
-}
-</script>
 <style>
-  :root {
-    --ink: #1A2647;
-    --ink-deep: #121B33;
-    --petrol: #086478;
-    --petrol-soft: #0a7d96;
-    --stamp-red: #B33838;
-    --paper: #F4F3EF;
-    --card: #FFFFFF;
-    --text: #22304F;
-    --muted: #6B7690;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
-    background: var(--paper);
-    color: var(--text);
-    line-height: 1.65;
-    overflow-x: hidden;
-  }
-  .mono { font-family: "SF Mono", ui-monospace, Menlo, monospace; letter-spacing: .12em; }
+/* ============================================================
+   VALIGIA EXPRESS — volo notturno
+   Zero librerie, zero font esterni, zero tracciamento.
+   Tutta la grafica è disegnata in CSS.
+   ============================================================ */
 
-  /* ================= ANIMAZIONI ================= */
-  @keyframes rise {
-    from { opacity: 0; transform: translateY(26px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes floaty {
-    0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
-    50%      { transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 2deg)); }
-  }
-  @keyframes fly {
-    from { offset-distance: 0%; opacity: 0; }
-    6%   { opacity: 1; }
-    94%  { opacity: 1; }
-    to   { offset-distance: 100%; opacity: 0; }
-  }
-  @keyframes dashmove {
-    to { stroke-dashoffset: -400; }
-  }
-  @keyframes bob {
-    0%, 100% { transform: rotate(3deg) translateY(0); }
-    50%      { transform: rotate(2.2deg) translateY(-8px); }
-  }
+:root{
+  --bg:#0B1225;          /* blu notte, lo stesso dell'app */
+  --bg-2:#111B33;        /* superficie appena sollevata */
+  --bg-3:#16223D;        /* campi e bordi vivi */
+  --text:#EAEEF7;
+  --muted:#8A99B8;
+  --petrol:#12A0BC;      /* petrolio schiarito: sul buio quello dell'app spegne */
+  --petrol-deep:#086478;
+  --stamp:#E06B6B;
+  --paper:#F6F5F1;       /* la carta resta carta: biglietti e francobolli */
+  --ink:#141C33;
+  --line:rgba(255,255,255,.11);
+  --line-2:rgba(255,255,255,.18);
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  --edge:clamp(20px,5vw,64px);
+}
 
-  /* comparsa allo scroll */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
-    transition-delay: var(--d, 0s);
-  }
-  .reveal.in { opacity: 1; transform: translateY(0); }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.55;
+  /* due luci lontane, disegnate: nessuna immagine caricata */
+  background-image:
+    radial-gradient(ellipse 90% 60% at 12% -5%, rgba(18,160,188,.16), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 95% 35%, rgba(224,107,107,.07), transparent 55%);
+  background-attachment:fixed;
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-    .reveal { opacity: 1; transform: none; }
-  }
+h1,h2,h3{margin:0;line-height:.95;letter-spacing:-.035em;font-weight:800}
+h1{font-size:clamp(3rem,11.5vw,10.5rem)}
+h2{font-size:clamp(2.1rem,6.2vw,5.2rem)}
+h3{font-size:clamp(1.15rem,2vw,1.5rem);letter-spacing:-.02em;line-height:1.15}
+p{margin:0}
+a{color:inherit}
 
-  /* ================= HERO ================= */
-  .hero {
-    background: linear-gradient(140deg, var(--petrol) 0%, var(--ink) 55%, var(--ink-deep) 100%);
-    color: #fff;
-    padding: 76px 24px 120px;
-    position: relative;
-    overflow: hidden;
-  }
-  /* rotta tratteggiata sullo sfondo */
-  .route-svg {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    pointer-events: none; opacity: .35;
-  }
-  .route-svg path {
-    fill: none; stroke: #fff; stroke-width: 2;
-    stroke-dasharray: 10 12; stroke-linecap: round;
-    animation: dashmove 18s linear infinite;
-  }
-  /* l'aereo che percorre la rotta */
-  .plane {
-    position: absolute; top: 0; left: 0;
-    font-size: 26px; pointer-events: none; z-index: 1;
-    offset-path: path('M -60 240 Q 520 30 1500 200');
-    offset-rotate: auto 45deg;
-    animation: fly 16s linear infinite;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,.35));
-  }
+.mono{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;
+  text-transform:uppercase;font-weight:600;
+}
+.lead{font-size:clamp(1.05rem,1.7vw,1.32rem);color:var(--muted);max-width:34em}
 
-  .hero-inner {
-    max-width: 1040px; margin: 0 auto;
-    display: flex; align-items: center; gap: 56px; flex-wrap: wrap;
-    position: relative; z-index: 2;
-  }
-  .hero-copy { flex: 1 1 400px; }
-  .hero-copy > * { animation: rise .8s cubic-bezier(.2,.7,.2,1) both; }
-  .hero-copy > *:nth-child(1) { animation-delay: .05s }
-  .hero-copy > *:nth-child(2) { animation-delay: .15s }
-  .hero-copy > *:nth-child(3) { animation-delay: .28s }
-  .hero-copy > *:nth-child(4) { animation-delay: .38s }
-  .hero-copy > *:nth-child(5) { animation-delay: .48s }
-  .hero-copy > *:nth-child(6) { animation-delay: .58s }
+section{position:relative;padding:clamp(80px,11vw,170px) var(--edge)}
+.wrap{max-width:1240px;margin:0 auto;position:relative;z-index:2}
 
-  .hero-icon {
-    width: 84px; height: 84px; border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.35);
-    margin-bottom: 26px;
-  }
-  .hero h1 { font-size: clamp(2.3rem, 5vw, 3.4rem); line-height: 1.08; font-weight: 800; letter-spacing: -.02em; }
-  .hero p.tag { font-size: 1.14rem; margin: 18px 0 8px; color: #CFE3EA; max-width: 30em; }
-  .hero p.sub { font-size: .9rem; color: #8FA6C4; margin-bottom: 30px; }
-  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
-  .btn {
-    display: inline-block; padding: 14px 26px; border-radius: 999px;
-    font-weight: 700; font-size: 1rem; text-decoration: none;
-    transition: transform .2s cubic-bezier(.2,.7,.2,1), box-shadow .2s;
-  }
-  .btn:hover { transform: translateY(-3px) scale(1.02); }
-  .btn:active { transform: translateY(0) scale(.98); }
-  .btn-primary { background: #fff; color: var(--ink); box-shadow: 0 8px 24px rgba(0,0,0,.3); }
-  .btn-primary:hover { box-shadow: 0 14px 34px rgba(0,0,0,.4); }
-  .btn-ghost { border: 1.5px solid rgba(255,255,255,.5); color: #fff; }
-  .cta-note { font-size: .8rem; color: #8FA6C4; margin-top: 14px; }
+/* --- cursore ad alone --------------------------------------------
+   Segue il mouse con un filo di ritardo e si allarga su ciò che si
+   può toccare. Sparisce del tutto su telefono e tablet.          */
+#halo{
+  position:fixed;top:0;left:0;z-index:90;
+  width:36px;height:36px;margin:-18px 0 0 -18px;
+  border:2px solid rgba(18,160,188,.9);
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  box-shadow:0 0 18px rgba(18,160,188,.35);
+  transition:width .28s cubic-bezier(.16,1,.3,1),
+             height .28s cubic-bezier(.16,1,.3,1),
+             margin .28s cubic-bezier(.16,1,.3,1),
+             background .28s, border-color .28s, opacity .25s;
+  will-change:transform;
+}
+#halo.on{opacity:1}
+#halo.hot{
+  width:66px;height:66px;margin:-33px 0 0 -33px;
+  background:rgba(18,160,188,.16);
+  border-color:rgba(18,160,188,.7);
+}
+#dot{
+  position:fixed;top:0;left:0;z-index:91;
+  width:7px;height:7px;margin:-3.5px 0 0 -3.5px;
+  background:var(--petrol);border-radius:50%;
+  box-shadow:0 0 10px rgba(18,160,188,.9);
+  pointer-events:none;opacity:0;transition:opacity .25s;
+}
+#dot.on{opacity:1}
 
-  .hero-shot { flex: 0 1 320px; margin: 0 auto; animation: rise 1s .3s cubic-bezier(.2,.7,.2,1) both; }
-  .hero-shot img.phone {
-    width: 300px; border-radius: 38px;
-    box-shadow: 0 30px 60px rgba(0,0,0,.45);
-    display: block;
-    animation: bob 7s ease-in-out infinite;
-    transition: transform .4s cubic-bezier(.2,.7,.2,1);
-  }
-  .hero-shot img.phone:hover { transform: rotate(0deg) scale(1.03); animation-play-state: paused; }
+/* Cursore custom attivo: nascondo la freccia di sistema, così NON si
+   vedono due cursori sovrapposti. Nei campi dove si scrive la lascio,
+   altrimenti non si vede dove va il testo. */
+html.cur-custom, html.cur-custom a, html.cur-custom button, html.cur-custom .chip{cursor:none}
+html.cur-custom input, html.cur-custom select, html.cur-custom textarea{cursor:auto}
+@media(hover:none),(pointer:coarse){#halo,#dot{display:none}}
 
-  /* francobolli */
-  .stamp {
-    position: absolute; color: var(--stamp-red);
-    width: 91px; height: 104px; text-align: center;
-    padding: 12px 6px;
-    background-color: transparent;
-    background-image: radial-gradient(#fff 9.5px, rgba(255,255,255,0) 10px);
-    background-size: 13px 13px;
-    background-position: -6.5px -6.5px;
-    filter: drop-shadow(0 6px 14px rgba(0,0,0,.28));
-    user-select: none;
-    animation: floaty 7s ease-in-out infinite;
-    z-index: 1;
-  }
-  .stamp .top { font-size: 7px; font-weight: 700; letter-spacing: .18em; opacity: .75; }
-  .stamp .mark { font-size: 36px; line-height: 1.3; }
-  .stamp .city { font-size: 9px; font-weight: 800; letter-spacing: .1em; }
-  .stamp .val { position: absolute; top: 10px; right: 12px; font-size: 10px; font-weight: 900; font-family: Georgia, serif; opacity: .7; }
-  .s1 { top: 44px; right: 4%; --r: -10deg; animation-delay: 0s; }
-  .s2 { bottom: 64px; left: 3%; --r: 7deg; animation-delay: 2.3s; }
-  .s3 { top: 56%; right: 31%; --r: -5deg; opacity: .35; animation-delay: 4.1s; display: none; }
-  @media (min-width: 900px) { .s3 { display: block; } }
+/* --- navigazione -------------------------------------------------- */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:70;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px var(--edge);
+  background:rgba(11,18,37,.66);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid transparent;
+  transition:border-color .3s;
+}
+nav.stuck{border-bottom-color:var(--line)}
+nav .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;text-decoration:none}
+nav .brand img{width:26px;height:26px;border-radius:7px}
+nav .links{display:flex;gap:26px}
+nav .links a{text-decoration:none;font-size:.86rem;font-weight:600;color:var(--muted);transition:color .2s}
+nav .links a:hover{color:var(--petrol)}
+@media(max-width:760px){nav .links{display:none}}
 
-  /* ================= SEZIONI ================= */
-  section { padding: 76px 24px; }
-  .wrap { max-width: 1040px; margin: 0 auto; }
-  .kicker { font-size: .75rem; font-weight: 700; letter-spacing: .18em; color: var(--petrol); text-transform: uppercase; }
-  h2 { font-size: clamp(1.7rem, 3.5vw, 2.3rem); font-weight: 800; letter-spacing: -.01em; margin: 8px 0 14px; color: var(--ink); }
-  .lead { color: var(--muted); max-width: 44em; }
+/* --- HERO --------------------------------------------------------- */
+#hero{
+  min-height:100svh;display:flex;align-items:center;
+  padding-top:clamp(90px,12vh,150px);padding-bottom:clamp(60px,8vh,110px);
+}
+.hero-grid{
+  display:grid;grid-template-columns:1.15fr .85fr;
+  gap:clamp(24px,4vw,70px);align-items:center;width:100%;
+}
+@media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:44px}}
+@media(max-width:560px){
+  .stamp{width:88px}
+  .stamp[style*="right"]{right:2px!important;top:-46px!important}
+  .stamp[style*="left"]{left:-6px!important;bottom:-52px!important}
+}
 
-  /* storia */
-  .story { background: #fff; }
-  .story blockquote {
-    font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 600; color: var(--ink);
-    max-width: 30em; line-height: 1.5;
-  }
-  .story blockquote em { color: var(--petrol); font-style: normal; }
-  .story .firma { margin-top: 22px; color: var(--muted); font-size: .95rem; }
+.kicker{display:inline-flex;align-items:center;gap:9px;color:var(--petrol);margin-bottom:22px}
+.kicker::before{content:"";width:34px;height:1.5px;background:var(--petrol);display:block}
 
-  .grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 18px; margin-top: 40px;
-  }
-  .card {
-    background: var(--card); border-radius: 20px; padding: 26px 24px;
-    border: 1px solid rgba(26,38,71,.06);
-    transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s;
-  }
-  .card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(18,27,51,.12); }
-  .card .emoji { font-size: 1.9rem; display: block; margin-bottom: 12px; transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
-  .card:hover .emoji { transform: scale(1.25) rotate(-6deg); }
-  .card h3 { font-size: 1.05rem; margin-bottom: 6px; color: var(--ink); }
-  .card p { font-size: .92rem; color: var(--muted); }
+/* --- il finestrino dell'aereo (hero) ------------------------------
+   La foto vera fa un zoom lentissimo, come se l'aereo si muovesse;
+   davanti galleggia il telefono con l'app. È il "guardo fuori dal
+   finestrino e intanto uso l'app".                                  */
+.hero-visual{position:relative;padding:10px}
+.window{
+  position:relative;
+  border-radius:26px;
+  overflow:hidden;
+  transform:rotate(1.4deg);
+  box-shadow:0 50px 100px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
+  aspect-ratio:1100/1500;
+}
+.window img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.08);
+  animation:kenburns 26s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes kenburns{
+  from{transform:scale(1.08) translate3d(0,0,0)}
+  to{transform:scale(1.2) translate3d(-2%,-3%,0)}
+}
+/* un velo di luce che scivola sul vetro ogni tanto */
+.window .glare{
+  position:absolute;top:0;left:-40%;width:35%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.18),transparent);
+  transform:skewX(-14deg);
+  animation:glare 8s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes glare{
+  0%,72%{left:-45%}
+  86%,100%{left:130%}
+}
+/* leggera vignettatura per far sembrare il vetro incassato */
+.window::after{
+  content:"";position:absolute;inset:0;border-radius:26px;pointer-events:none;
+  box-shadow:inset 0 0 70px 12px rgba(4,10,22,.55);
+}
 
-  /* screenshots */
-  .shots { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
-  .shots figure { text-align: center; }
-  .shots img {
-    width: 240px; border-radius: 30px; box-shadow: 0 18px 44px rgba(18,27,51,.22);
-    transition: transform .35s cubic-bezier(.2,.7,.2,1);
-  }
-  .shots figure:hover img { transform: translateY(-8px) scale(1.02); }
-  .shots figcaption { font-size: .85rem; color: var(--muted); margin-top: 12px; }
+.phone{
+  position:absolute;
+  right:-6%;bottom:-7%;
+  width:46%;margin:0;
+  border-radius:30px;
+  overflow:hidden;
+  border:4px solid #0d1526;
+  box-shadow:0 34px 70px -20px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.05);
+  background:#0d1526;
+}
+.phone img{width:100%;display:block}
+.phone.float{animation:floaty 6.5s ease-in-out infinite}
+@keyframes floaty{
+  0%,100%{transform:translateY(0) rotate(-3deg)}
+  50%{transform:translateY(-16px) rotate(-3deg)}
+}
+@media(max-width:940px){
+  .window{transform:none;max-width:520px;margin:0 auto}
+  .phone{width:42%;right:0;bottom:-5%}
+}
 
-  /* compatibilità */
-  .compat-card {
-    background: var(--card); border-radius: 22px; overflow: hidden;
-    border: 1px solid rgba(26,38,71,.08); margin-top: 36px;
-  }
-  .compat-table { width: 100%; border-collapse: collapse; font-size: .93rem; }
-  .compat-table th, .compat-table td {
-    padding: 13px 16px; text-align: center; border-bottom: 1px solid rgba(26,38,71,.06);
-  }
-  .compat-table td:first-child, .compat-table th:first-child {
-    text-align: left; font-weight: 600; color: var(--ink);
-  }
-  .compat-table thead th {
-    background: var(--ink); color: #fff; font-size: .95rem; padding: 16px;
-  }
-  .compat-table thead th:first-child { background: var(--ink); }
-  .compat-table tbody tr:nth-child(even) { background: rgba(26,38,71,.025); }
-  .compat-table tbody tr:last-child td { border-bottom: none; }
-  .ok { color: #1E8E3E; font-weight: 700; }
-  .soon {
-    display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .06em;
-    color: #9A6B00; background: rgba(255,190,60,.18); border: 1px solid rgba(255,190,60,.45);
-    padding: 3px 10px; border-radius: 999px; white-space: nowrap;
-  }
-  .na { color: var(--muted); }
-  .compat-note { font-size: .8rem; color: var(--muted); margin-top: 14px; }
-  @media (max-width: 560px) {
-    .compat-table { font-size: .8rem; }
-    .compat-table th, .compat-table td { padding: 10px 8px; }
-  }
+h1 .l{display:block;overflow:hidden}
+h1 .l span{display:block;transform:translateY(105%);animation:rise .95s cubic-bezier(.16,1,.3,1) forwards}
+h1 .l:nth-child(2) span{animation-delay:.1s}
+@keyframes rise{to{transform:translateY(0)}}
+h1 em{font-style:normal;color:var(--petrol)}
 
-  /* patch / changelog */
-  .changelog { margin-top: 36px; max-width: 720px; }
-  .release { display: flex; gap: 18px; padding-bottom: 26px; position: relative; }
-  .release:not(:last-child)::before {
-    content: ""; position: absolute; left: 33px; top: 40px; bottom: 0;
-    width: 2px; background: rgba(26,38,71,.1);
-  }
-  .release-badge {
-    flex: 0 0 auto; width: 68px; height: 30px; border-radius: 999px;
-    background: var(--petrol); color: #fff; font-weight: 800; font-size: .9rem;
-    display: flex; align-items: center; justify-content: center; margin-top: 4px;
-    box-shadow: 0 4px 12px rgba(8,100,120,.3);
-  }
-  .release-badge.old { background: #9AA6BC; box-shadow: none; }
-  .release-body h3 { font-size: 1.05rem; color: var(--ink); margin-bottom: 2px; }
-  .release-body .date { font-size: .78rem; color: var(--muted); margin-bottom: 8px; }
-  .release-body ul { margin: 0; padding-left: 18px; }
-  .release-body li { font-size: .92rem; color: var(--text); margin-bottom: 4px; }
+.hero-sub{margin-top:26px;max-width:31em}
+.hero-facts{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 26px;color:var(--muted)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
 
-  /* bug report */
-  .bug { background: linear-gradient(140deg, #B33838 0%, #7A2020 100%); color: #fff; }
-  .bug .kicker { color: #FFC9C9; }
-  .bug h2 { color: #fff; }
-  .bug p { color: #FBE3E3; max-width: 42em; }
-  .bug .btn-report {
-    display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
-    background: #fff; color: #7A2020; padding: 14px 26px; border-radius: 999px;
-    font-weight: 700; text-decoration: none; transition: transform .2s, box-shadow .2s;
-  }
-  .bug .btn-report:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+.btn{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:14px 26px;border-radius:100px;
+  font-weight:650;font-size:.95rem;text-decoration:none;
+  border:1.5px solid var(--line-2);color:var(--text);
+  transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s,color .25s,box-shadow .25s,border-color .25s;
+}
+.btn-primary{background:var(--petrol);color:#04202a;border-color:var(--petrol);font-weight:700}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(18,160,188,.35)}
+.btn-ghost:hover{background:rgba(255,255,255,.07);border-color:var(--petrol);transform:translateY(-2px)}
 
-  /* install */
-  .install { background: var(--ink); color: #fff; position: relative; overflow: hidden; }
-  .install .kicker { color: #7FD1E0; }
-  .install h2 { color: #fff; }
-  .install .lead { color: #A9B7D0; }
-  .steps { counter-reset: step; margin-top: 36px; display: grid; gap: 14px; max-width: 640px; }
-  .step {
-    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
-    border-radius: 16px; padding: 18px 20px 18px 64px; position: relative; font-size: .95rem;
-    transition: background .3s, transform .3s;
-  }
-  .step:hover { background: rgba(255,255,255,.1); transform: translateX(6px); }
-  .step::before {
-    counter-increment: step; content: counter(step);
-    position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--petrol-soft); color: #fff; font-weight: 800;
-    display: flex; align-items: center; justify-content: center; font-size: .9rem;
-  }
-  .step a { color: #7FD1E0; }
-  .badge {
-    display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
-    background: rgba(127,209,224,.15); color: #7FD1E0; border: 1px solid rgba(127,209,224,.4);
-    padding: 4px 12px; border-radius: 999px; margin-left: 10px; vertical-align: middle;
-  }
+/* --- carta d'imbarco: resta di carta, sul buio spicca ------------- */
+.pass{
+  position:relative;background:var(--paper);color:var(--ink);
+  border-radius:18px;overflow:hidden;transform:rotate(-1.4deg);
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.06);
+  transition:transform .5s cubic-bezier(.16,1,.3,1);
+}
+.pass:hover{transform:rotate(0deg) translateY(-6px)}
+.pass-top{
+  background:linear-gradient(105deg,var(--petrol-deep),var(--ink));
+  color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;
+}
+.pass-body{padding:20px;display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+.pass-body .fld .mono{color:#6B7690;font-size:.58rem}
+.pass-body .fld .big{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:800;letter-spacing:-.04em;line-height:1}
+.pass-body .fld .sm{font-size:.82rem;color:#6B7690}
+.pass-arrow{color:var(--petrol-deep);opacity:.8}
+.perf{
+  border-top:2px dashed rgba(20,28,51,.18);position:relative;padding:15px 20px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+/* i due morsi laterali devono essere del colore dello sfondo */
+.perf::before,.perf::after{
+  content:"";position:absolute;top:-11px;width:22px;height:22px;
+  background:var(--bg);border-radius:50%;
+}
+.perf::before{left:-11px}
+.perf::after{right:-11px}
+.barcode{display:flex;gap:2px;align-items:flex-end;height:34px}
+.barcode i{display:block;width:2px;background:var(--ink);opacity:.85}
 
-  /* privacy */
-  .privacy-strip {
-    display: flex; gap: 32px; flex-wrap: wrap; justify-content: center;
-    margin-top: 40px; text-align: center;
-  }
-  .stat .n { font-size: 2.4rem; font-weight: 800; color: var(--petrol); }
-  .stat .l { font-size: .85rem; color: var(--muted); }
+/* --- francobollo -------------------------------------------------- */
+.stamp{
+  position:absolute;width:112px;background:var(--paper);padding:7px;
+  -webkit-mask:
+    radial-gradient(circle 5px at 0 50%, transparent 98%, #000) 0 0/100% 14px repeat-y,
+    radial-gradient(circle 5px at 100% 50%, transparent 98%, #000) 100% 0/100% 14px repeat-y,
+    radial-gradient(circle 5px at 50% 0, transparent 98%, #000) 0 0/14px 100% repeat-x,
+    radial-gradient(circle 5px at 50% 100%, transparent 98%, #000) 0 100%/14px 100% repeat-x,
+    linear-gradient(#000,#000);
+  -webkit-mask-composite:source-in;
+  mask:
+    radial-gradient(circle 5px at 0 50%, transparent 98%, #000) 0 0/100% 14px repeat-y,
+    radial-gradient(circle 5px at 100% 50%, transparent 98%, #000) 100% 0/100% 14px repeat-y,
+    radial-gradient(circle 5px at 50% 0, transparent 98%, #000) 0 0/14px 100% repeat-x,
+    radial-gradient(circle 5px at 50% 100%, transparent 98%, #000) 0 100%/14px 100% repeat-x,
+    linear-gradient(#000,#000);
+  mask-composite:intersect;
+  filter:drop-shadow(0 14px 30px rgba(0,0,0,.6));
+  z-index:3;
+}
+.stamp .in{border:1px solid currentColor;padding:9px 6px 7px;text-align:center;border-radius:2px}
+.stamp .em{font-size:1.9rem;line-height:1;display:block}
+.stamp .nm{font-family:var(--mono);font-size:.5rem;letter-spacing:.16em;font-weight:700;margin-top:6px;display:block}
+.stamp .pa{font-family:var(--mono);font-size:.36rem;letter-spacing:.18em;opacity:.7;display:block;margin-bottom:5px}
 
-  /* changelog */
-  .changelog { margin-top: 36px; display: grid; gap: 16px; max-width: 720px; }
-  .release {
-    background: var(--card); border: 1px solid rgba(26,38,71,.06);
-    border-radius: 18px; padding: 22px 24px;
-    display: grid; grid-template-columns: 72px 1fr; gap: 16px; align-items: start;
-  }
-  .release .ver {
-    font-weight: 800; color: var(--petrol); font-size: 1.05rem;
-    font-family: "SF Mono", ui-monospace, Menlo, monospace;
-  }
-  .release ul { margin: 0; padding-left: 18px; }
-  .release li { font-size: .92rem; color: var(--muted); margin-bottom: 6px; }
-  .release li strong { color: var(--text); font-weight: 600; }
-  @media (max-width: 520px) {
-    .release { grid-template-columns: 1fr; gap: 8px; }
-  }
+/* --- titoli di sezione -------------------------------------------- */
+.sec-head{max-width:860px;margin-bottom:clamp(38px,5vw,66px)}
+.sec-head h2{max-width:15ch}
+.sec-head .lead{margin-top:20px;max-width:46ch}
 
-  footer {
-    padding: 40px 24px 60px; text-align: center;
-    font-size: .85rem; color: var(--muted);
-  }
-  footer .mono { font-size: .7rem; letter-spacing: .2em; color: var(--petrol); }
+/* --- DEMO --------------------------------------------------------- */
+#demo{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}
+.demo-shell{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:start}
+@media(max-width:940px){.demo-shell{grid-template-columns:1fr}}
+
+.demo-form{background:var(--bg-2);border:1px solid var(--line);border-radius:20px;padding:26px}
+.demo-form label{display:block;margin-bottom:18px}
+.demo-form .mono{color:var(--muted);display:block;margin-bottom:8px}
+.demo-form input,.demo-form select{
+  width:100%;padding:13px 15px;border-radius:12px;
+  border:1px solid var(--line-2);background:var(--bg-3);color:var(--text);
+  font-size:1rem;font-family:var(--sans);transition:border-color .2s,background .2s;
+}
+.demo-form input:focus,.demo-form select:focus{outline:none;border-color:var(--petrol);background:#1B2947}
+.demo-form input::placeholder{color:#63719A}
+.demo-form select option{background:var(--bg-2);color:var(--text)}
+.demo-btn{
+  width:100%;padding:15px;border-radius:100px;border:none;
+  background:var(--petrol);color:#04202a;font-weight:700;font-size:1rem;
+  font-family:var(--sans);cursor:pointer;
+  transition:transform .2s,box-shadow .2s,opacity .2s;
+}
+.demo-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 30px rgba(18,160,188,.35)}
+.demo-btn:disabled{opacity:.55;cursor:progress}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{
+  padding:6px 13px;border-radius:100px;cursor:pointer;
+  border:1px solid var(--line-2);background:transparent;color:var(--muted);
+  font-size:.8rem;font-family:var(--sans);
+  transition:background .2s,color .2s,border-color .2s;
+}
+.chip:hover{background:var(--petrol);color:#04202a;border-color:var(--petrol)}
+
+/* il risultato è un foglio stampato: chiaro, per contrasto */
+.demo-out{
+  background:var(--paper);color:var(--ink);border-radius:20px;padding:26px;
+  min-height:330px;position:relative;overflow:hidden;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,.8);
+}
+.demo-empty{height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#6B7690;gap:12px}
+.demo-empty .big{font-size:2.4rem;opacity:.4}
+.wx{display:flex;gap:20px;flex-wrap:wrap;align-items:baseline;padding-bottom:16px;margin-bottom:18px;border-bottom:1px solid rgba(20,28,51,.14)}
+.wx .t{font-size:2.6rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+.wx .where{font-weight:700;font-size:1.05rem}
+.wx .note{color:#6B7690;font-size:.9rem;width:100%}
+.wx .mono{color:#6B7690}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:18px}
+.cat h4{margin:0 0 8px;font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--petrol-deep);font-weight:700}
+.cat ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.cat li{font-size:.9rem;display:flex;gap:8px;align-items:flex-start;opacity:0;transform:translateY(6px);animation:pop .4s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+.cat li::before{content:"";width:13px;height:13px;border:1.5px solid var(--petrol-deep);border-radius:4px;flex:none;margin-top:4px}
+.demo-foot{margin-top:20px;padding-top:14px;border-top:1px solid rgba(20,28,51,.14);font-size:.78rem;color:#6B7690}
+.spinner{width:24px;height:24px;border:2.5px solid rgba(8,100,120,.25);border-top-color:var(--petrol-deep);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* --- FUNZIONI: blocchi liberi, non incasellati -------------------- */
+.flow{display:flex;flex-direction:column;gap:clamp(90px,14vw,210px);position:relative}
+.feat{max-width:min(600px,88%);position:relative}
+.feat[data-x="r"]{margin-left:auto;text-align:right}
+.feat[data-x="r"] .kick{flex-direction:row-reverse}
+.feat[data-x="c"]{margin-inline:auto}
+.feat[data-x="in"]{margin-left:clamp(0px,10vw,150px)}
+.feat .kick{
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;
+  text-transform:uppercase;font-weight:700;color:var(--petrol);
+}
+.feat .kick::before{content:"";width:26px;height:1.5px;background:var(--petrol);flex:none}
+.feat .ico{font-size:clamp(2rem,4vw,2.8rem);display:block;margin-bottom:16px;line-height:1}
+.feat h3{font-size:clamp(1.7rem,4.6vw,3.1rem);line-height:1.02;letter-spacing:-.035em}
+.feat p{margin-top:16px;color:var(--muted);font-size:clamp(1rem,1.5vw,1.18rem);max-width:44ch}
+.feat[data-x="r"] p{margin-left:auto}
+.feat{opacity:0;transform:translate3d(-34px,52px,0)}
+.feat[data-x="r"]{transform:translate3d(34px,52px,0)}
+.feat[data-x="c"]{transform:translate3d(0,52px,0)}
+.feat.seen{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+@media(max-width:700px){
+  .feat{max-width:100%;text-align:left!important}
+  .feat[data-x="r"],.feat[data-x="c"],.feat[data-x="in"]{margin:0}
+  .feat[data-x="r"] .kick{flex-direction:row}
+  .feat[data-x="r"] p{margin-left:0}
+  .feat,.feat[data-x="r"],.feat[data-x="c"]{transform:translate3d(0,44px,0)}
+}
+
+/* --- NUMERI ------------------------------------------------------- */
+.figures{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:clamp(20px,3vw,40px);
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:clamp(34px,4vw,54px) 0;
+}
+.fig{text-align:center}
+.fig .n{font-size:clamp(2.6rem,5.6vw,4.4rem);font-weight:800;letter-spacing:-.05em;line-height:1;color:var(--petrol)}
+.fig .l{margin-top:9px;color:var(--muted);font-size:.88rem}
+
+/* --- INSTALLA ----------------------------------------------------- */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:820px){.dual{grid-template-columns:1fr}}
+.card-i{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:22px;padding:30px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:transform .4s cubic-bezier(.16,1,.3,1),border-color .4s,box-shadow .4s;
+}
+.card-i:hover{transform:translateY(-4px);border-color:var(--line-2);box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.card-i h3{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card-i .steps{margin:0;padding-left:19px;color:var(--muted);font-size:.92rem;display:flex;flex-direction:column;gap:7px}
+.card-i .note{font-size:.8rem;color:var(--muted)}
+.badge{
+  font-family:var(--mono);font-size:.55rem;letter-spacing:.16em;
+  padding:4px 10px;border-radius:100px;border:1px solid currentColor;
+  color:var(--petrol);font-weight:700;
+}
+.badge.warn{color:var(--stamp)}
+
+/* --- CHANGELOG ---------------------------------------------------- */
+.log{position:relative;padding-left:clamp(24px,4vw,54px)}
+.log::before{
+  content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;
+  background:repeating-linear-gradient(var(--line-2) 0 6px, transparent 6px 12px);
+}
+.rel{position:relative;padding-bottom:clamp(30px,4vw,48px)}
+.rel::before{
+  content:"";position:absolute;left:calc(-1*clamp(24px,4vw,54px) + 1px);top:9px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2.5px solid var(--petrol);
+}
+.rel.now::before{background:var(--petrol);box-shadow:0 0 0 5px rgba(18,160,188,.18)}
+.rel-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.rel-v{font-size:1.5rem;font-weight:800;letter-spacing:-.03em}
+.rel .plat{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;color:var(--muted)}
+.rel ul{margin:0;padding-left:18px;color:var(--muted);display:flex;flex-direction:column;gap:8px;font-size:.94rem}
+.rel ul strong{color:var(--text)}
+
+/* --- PRIVACY ------------------------------------------------------ */
+#privacy{text-align:center;border-top:1px solid var(--line)}
+#privacy .kicker{justify-content:center}
+#privacy .lead{margin:20px auto 0}
+
+footer{padding:0 var(--edge) 60px;text-align:center;font-size:.85rem;color:var(--muted)}
+footer .mono{color:rgba(234,238,247,.3);margin-bottom:14px}
+footer a{color:var(--petrol);text-decoration:none}
+
+/* --- comparsa allo scroll ----------------------------------------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .rv,.feat{opacity:1;transform:none}
+  h1 .l span{transform:none}
+  html{scroll-behavior:auto}
+  #halo,#dot,#plane{display:none}
+}
 </style>
 </head>
 <body>
 
+<div id="halo" aria-hidden="true"></div>
+<div id="dot" aria-hidden="true"></div>
+
+<nav id="nav">
+  <a class="brand" href="#hero"><img src="img/icon.png" alt="">Valigia Express</a>
+  <div class="links">
+    <a href="#demo">Provala</a>
+    <a href="#funzioni">Cosa fa</a>
+    <a href="#installa">Installa</a>
+    <a href="#novita">Novità</a>
+  </div>
+</nav>
+
 <!-- ============ HERO ============ -->
-<header class="hero">
-  <svg class="route-svg" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M -60 240 Q 520 30 1500 200"/>
-  </svg>
-  <span class="plane" aria-hidden="true">✈️</span>
-
-  <div class="stamp s1" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">🗼</div><div class="city">TOKYO</div></div>
-  <div class="stamp s2" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">⚜️</div><div class="city">PARIGI</div></div>
-  <div class="stamp s3" aria-hidden="true"><div class="val">26</div><div class="top">POSTA AEREA</div><div class="mark">🗽</div><div class="city">NEW YORK</div></div>
-
-  <div class="hero-inner">
-    <div class="hero-copy">
-      <img class="hero-icon" src="img/icon.png" alt="Icona di Valigia Express">
-      <h1>La valigia si fa da sola.<br>Beh, quasi.</h1>
-      <p class="tag">Tu dici dove vai — o inquadri la carta d'imbarco. Il tuo iPhone controlla che tempo farà davvero e ti prepara la lista giusta: concreta, personale, senza "abbigliamento adeguato".</p>
-      <p class="sub mono">TUTTO SUL TUO TELEFONO · NIENTE ACCOUNT · NIENTE SERVER · 4 MB</p>
-      <div class="cta-row">
-        <a class="btn btn-primary" href="#installa">📲 Portala con te</a>
-        <a class="btn btn-ghost" href="#funzioni">Cosa sa fare</a>
+<section id="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker mono">Anno 2026 · Volo VE 026</div>
+      <h1>
+        <span class="l"><span>La valigia</span></span>
+        <span class="l"><span>si fa <em>da sola</em>.</span></span>
+      </h1>
+      <p class="lead hero-sub">
+        Dici dove vai — o inquadri la carta d'imbarco. Il telefono controlla
+        che tempo farà davvero e prepara la lista giusta: concreta, personale,
+        senza "abbigliamento adeguato".
+      </p>
+      <div class="hero-facts mono">
+        <span>Tutto sul telefono</span><span>Niente account</span><span>Niente abbonamento</span><span>4 MB</span>
       </div>
-      <p class="cta-note">📱 Su iPhone (sideloading) e 🤖 Android (download diretto, pronta ora)</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#demo">Provala qui, nel browser</a>
+        <a class="btn btn-ghost" href="#installa">Installala</a>
+      </div>
     </div>
-    <div class="hero-shot">
-      <img class="phone" src="img/screen-home.png" alt="Schermata principale di Valigia Express: la carta d'imbarco da compilare">
+
+    <div class="hero-visual">
+      <!-- il finestrino: foto vera, con uno zoom lentissimo (come se
+           l'aereo si muovesse). Davanti, il telefono con l'app. -->
+      <div class="window" data-parallax="0.06">
+        <img src="img/finestrino.jpg" alt="Vista sopra le nuvole dal finestrino di un aereo">
+        <span class="glare"></span>
+      </div>
+      <figure class="phone float" data-parallax="-0.05">
+        <img src="img/screen-home.png" alt="La schermata principale di Valigia Express">
+      </figure>
+      <div class="stamp" style="top:-46px;right:-26px;transform:rotate(9deg);color:#B33838">
+        <div class="in">
+          <span class="pa">Posta Aerea</span>
+          <span class="em">🗼</span>
+          <span class="nm">Tokyo</span>
+        </div>
+      </div>
     </div>
   </div>
-</header>
+</section>
 
-<!-- ============ STORIA ============ -->
-<section class="story">
-  <div class="wrap reveal">
-    <div class="kicker">Perché esiste</div>
-    <blockquote>
-      «Ogni viaggio inizia allo stesso modo: sono le 23:47, la sveglia è alle 5, e tu sei lì a fissare la valigia aperta pensando <em>"sto dimenticando qualcosa, lo sento"</em>.<br>
-      Ecco. Volevo smettere di fare quella scena.»
-    </blockquote>
-    <p class="firma">— Matteo, che una volta è partito per Londra senza caricabatterie</p>
+<!-- ============ DEMO INTERATTIVA ============ -->
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="kicker mono">Provala senza installarla</div>
+      <h2>Scrivi dove vai.</h2>
+      <p class="lead">
+        Questa è una versione ridotta che gira qui nel browser, col meteo
+        <strong style="color:var(--text)">vero</strong> preso da Open-Meteo — la stessa fonte
+        che usa l'app. Nell'app la lista la scrive l'intelligenza artificiale del
+        telefono, e conosce anche i tuoi gusti.
+      </p>
+    </div>
+
+    <div class="demo-shell">
+      <div class="demo-form rv">
+        <label>
+          <span class="mono">Destinazione</span>
+          <input id="q-city" type="text" placeholder="Tokyo, Reykjavík, Palermo…" autocomplete="off">
+        </label>
+        <label>
+          <span class="mono">Quanti giorni</span>
+          <input id="q-days" type="number" min="1" max="21" value="5">
+        </label>
+        <label>
+          <span class="mono">Tipo di viaggio</span>
+          <select id="q-type">
+            <option>Città / turismo</option>
+            <option>Mare / spiaggia</option>
+            <option>Montagna / trekking</option>
+            <option>Lavoro / business</option>
+            <option>Neve / sci</option>
+          </select>
+        </label>
+        <button class="demo-btn" id="q-go">Prepara la valigia</button>
+        <div class="chips">
+          <button class="chip" data-c="Tokyo">Tokyo</button>
+          <button class="chip" data-c="Reykjavík">Reykjavík</button>
+          <button class="chip" data-c="Marrakech">Marrakech</button>
+          <button class="chip" data-c="Oslo">Oslo</button>
+        </div>
+      </div>
+
+      <div class="demo-out rv" id="out">
+        <div class="demo-empty">
+          <span class="big">🧳</span>
+          <p>Scrivi una città e premi <strong>Prepara la valigia</strong>.<br>
+          Il meteo arriva davvero, non è finto.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ============ FUNZIONI ============ -->
 <section id="funzioni">
   <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Cosa sa fare</div>
-      <h2>Più di una lista. Un compagno di viaggio.</h2>
-      <p class="lead">Dal momento in cui sai dove vai, a quando torni con il timbro sul passaporto. E in mezzo, tutto quello che serve davvero.</p>
+    <div class="sec-head rv">
+      <div class="kicker mono">Cosa sa fare</div>
+      <h2>Più di una lista.</h2>
     </div>
-    <div class="grid">
-      <div class="card reveal" style="--d:.0s"><span class="emoji">✨</span><h3>La lista che ti conosce</h3><p>L'AI gira sul telefono, guarda il meteo vero e impara le tue abitudini: se non spunti mai l'ombrello, smette di proportelo.</p></div>
-      <div class="card reveal" style="--d:.06s"><span class="emoji">📷</span><h3>Zero digitazione</h3><p>Inquadri la carta d'imbarco e destinazione e date si compilano da sole. Il volo finisce pure sulla mappa.</p></div>
-      <div class="card reveal" style="--d:.12s"><span class="emoji">🗺️</span><h3>Una mappa che capisce</h3><p>Cerchi "posti nerd" a Osaka e li trova davvero. Rotta di volo animata e attrazioni intorno al tuo hotel.</p></div>
-      <div class="card reveal" style="--d:.18s"><span class="emoji">🗣️</span><h3>Un amico del posto</h3><p>Gli chiedi a voce dove mangiare e ti risponde come un local: la trattoria vera, non la trappola coi menù plastificati.</p></div>
-      <div class="card reveal" style="--d:.0s"><span class="emoji">📮</span><h3>Ogni città, il suo vestito</h3><p>Scrivi Tokyo e tutto diventa rosso carpa con la Tokyo Tower e i francobolli. Parigi? Blu notte e giglio dorato.</p></div>
-      <div class="card reveal" style="--d:.06s"><span class="emoji">🛂</span><h3>Il passaporto dei ricordi</h3><p>Ogni viaggio lascia un timbro. Li collezioni, li ritocchi, e riapri la valigia di Lisbona quando ci torni.</p></div>
-      <div class="card reveal" style="--d:.12s"><span class="emoji">🔊</span><h3>Anche a mani occupate</h3><p>"Hey Siri, cosa metto in valigia?" — e la lista te la legge il HomePod mentre stiri le camicie.</p></div>
-      <div class="card reveal" style="--d:.18s"><span class="emoji">✈️</span><h3>Il countdown è servito</h3><p>Sulla Lock Screen e nella Dynamic Island: quanto manca alla partenza e quanti oggetti mancano in valigia.</p></div>
-      <div class="card reveal" style="--d:.24s"><span class="emoji">📡</span><h3>Fatta per l'estero</h3><p>Risparmio dati, cache offline, traduttore che funziona in aereo. E parla italiano, inglese e giapponese.</p></div>
+
+    <div class="flow">
+      <div class="feat" data-x="l">
+        <span class="ico">🌦️</span>
+        <div class="kick">01 · Il meteo vero</div>
+        <h3>Guarda che tempo farà. Da sola.</h3>
+        <p>Il modello chiama un attrezzo per il meteo quando gli serve, e adatta
+        la lista al clima reale della settimana in cui parti. Non alla media
+        stagionale: proprio a quei giorni lì.</p>
+      </div>
+
+      <div class="feat" data-x="r">
+        <span class="ico">📷</span>
+        <div class="kick">02 · Lo scanner</div>
+        <h3>Inquadra il biglietto.</h3>
+        <p>Carta d'imbarco, treno o pullman: destinazione e date si compilano da
+        sole. Niente da digitare.</p>
+      </div>
+
+      <div class="feat" data-x="in">
+        <span class="ico">🗺️</span>
+        <div class="kick">03 · La mappa</div>
+        <h3>La rotta, e cosa c'è intorno.</h3>
+        <p>Volo o percorso in auto sulla strada vera. E cerchi con parole tue —
+        "posti nerd", "ramen", "vintage" — trovando i posti giusti.</p>
+      </div>
+
+      <div class="feat" data-x="l">
+        <span class="ico">🧭</span>
+        <div class="kick">04 · Il concierge</div>
+        <h3>Un assistente che sa dove stai andando.</h3>
+        <p>Conosce le tue date, il meteo e cosa hai già in valigia. Gli chiedi un
+        itinerario o cosa vedere se piove — e se vuoi ti sistema la lista.</p>
+      </div>
+
+      <div class="feat" data-x="r">
+        <span class="ico">🛂</span>
+        <div class="kick">05 · Il passaporto</div>
+        <h3>Ogni viaggio lascia un timbro.</h3>
+        <p>I posti dove sei stato si collezionano, come su un passaporto vero.</p>
+      </div>
+
+      <div class="feat" data-x="c">
+        <span class="ico">🔒</span>
+        <div class="kick">06 · La regola</div>
+        <h3>Non esce niente da qui.</h3>
+        <p>Nessun account, nessun server, nessun tracciamento. L'unica chiamata
+        di rete è al meteo, che è pubblico e gratuito.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SCREENSHOT ============ -->
-<section style="padding-top: 0;">
+<!-- ============ NUMERI ============ -->
+<section style="padding-top:0">
   <div class="wrap">
-    <div class="shots">
-      <figure class="reveal" style="--d:.0s"><img src="img/screen-home.png" alt="La carta d'imbarco da compilare"><figcaption>La carta d'imbarco</figcaption></figure>
-      <figure class="reveal" style="--d:.1s"><img src="img/screen-novita.png" alt="Il foglio Novità a ogni aggiornamento"><figcaption>Le novità, a ogni aggiornamento</figcaption></figure>
-      <figure class="reveal" style="--d:.2s"><img src="img/screen-giappone.png" alt="L'app in giapponese"><figcaption>日本語も話せます 🇯🇵</figcaption></figure>
-      <figure class="reveal" style="--d:.3s"><img src="img/screen-android.png" alt="L'app su Android"><figcaption>Anche su Android 🤖</figcaption></figure>
+    <div class="figures rv">
+      <div class="fig"><div class="n" data-count="4">0</div><div class="l">MB su iPhone</div></div>
+      <div class="fig"><div class="n" data-count="0">0</div><div class="l">account richiesti</div></div>
+      <div class="fig"><div class="n" data-count="0">0</div><div class="l">euro al mese</div></div>
+      <div class="fig"><div class="n" data-count="3">0</div><div class="l">lingue</div></div>
+      <div class="fig"><div class="n" data-count="30">0</div><div class="l">città a tema</div></div>
     </div>
-  </div>
-</section>
-
-<!-- ============ COMPATIBILITÀ ============ -->
-<section id="compatibilita" style="padding-top: 20px;">
-  <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Compatibilità</div>
-      <h2>Cosa funziona, e dove</h2>
-      <p class="lead">Niente asterischi nascosti: ecco esattamente cosa fa ogni versione oggi. La versione iPhone è completa; quella Android è giovane e cresce a vista d'occhio.</p>
-    </div>
-
-    <div class="compat-card reveal">
-      <table class="compat-table">
-        <thead>
-          <tr>
-            <th>Funzione</th>
-            <th>🍏 iPhone</th>
-            <th>🤖 Android</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Sistema minimo</td><td>iOS 26</td><td>Android 8.0</td></tr>
-          <tr><td>Lista valigia con AI on-device</td><td>iPhone 15 Pro o più recente<br><span class="na" style="font-size:.78rem">(Apple Intelligence)</span></td><td><span class="soon">IN ARRIVO</span><br><span class="na" style="font-size:.78rem">Pixel 8+ / Galaxy S24+ (Gemini Nano)</span></td></tr>
-          <tr><td>Meteo reale della destinazione</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
-          <tr><td>Scanner carta d'imbarco</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
-          <tr><td>Temi e colori per città</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr>
-          <tr><td>Sfondo a francobolli</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Mappa con rotta e ricerca</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Assistente di viaggio (AI)</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Passaporto con timbri</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Kit di viaggio (SOS, Uber, hotel, Airbnb)</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Widget e Lock Screen</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>"Hey Siri, cosa metto in valigia?"</td><td><span class="ok">✓</span> <span class="na" style="font-size:.78rem">(+ HomePod, Watch, CarPlay)</span></td><td><span class="na">—</span></td></tr>
-          <tr><td>Traduttore offline</td><td><span class="ok">✓</span></td><td><span class="soon">IN ARRIVO</span></td></tr>
-          <tr><td>Lingue</td><td>🇮🇹 🇬🇧 🇯🇵</td><td>🇮🇹</td></tr>
-          <tr><td>Peso dell'app</td><td>~4 MB</td><td>~39 MB</td></tr>
-          <tr><td>Versione attuale</td><td>1.2 · completa</td><td>1.0 · anteprima</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="compat-note reveal">Su iPad funziona tutto come su iPhone (stessa app). Su Android, "in arrivo" significa che il pezzo esiste già su iPhone e verrà portato: niente vaporware.</p>
   </div>
 </section>
 
 <!-- ============ INSTALLA ============ -->
-<section class="install" id="installa">
+<section id="installa">
   <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Installazione</div>
-      <h2>Portala con te (senza App Store)</h2>
-      <p class="lead">C'è per iPhone <em>e</em> per Android. Nessun trucco, nessuna promessa strana: ecco come si installa su ciascuno, spiegato come si deve.</p>
+    <div class="sec-head rv">
+      <div class="kicker mono">Portala con te</div>
+      <h2>Senza App Store.</h2>
+      <p class="lead">Non è ancora sugli store: su Android scarichi il file e lo
+      installi, su iPhone serve un passaggio dal computer.</p>
     </div>
 
-    <h3 class="reveal" style="margin-top:40px; font-size:1.25rem;">🤖 Su Android <span class="badge" style="background:rgba(120,224,143,.15);color:#7FE08F;border-color:rgba(120,224,143,.4)">ANTEPRIMA</span></h3>
-    <p class="reveal" style="color:#A9B7D0; font-size:.95rem; max-width:42em; margin:6px 0 16px;">
-      Qui è facilissimo: scarichi il file e lo installi con un tap, niente computer, niente scadenza. (Al primo download Android chiede di autorizzare l'installazione da questa fonte — normale.)
-    </p>
-    <a class="btn btn-primary reveal" href="ValigiaExpress-android.apk" download style="margin-bottom:8px;">📥 Scarica per Android (.apk, ~73 MB)</a>
-    <p class="reveal" style="font-size:.8rem; color:#8FA6C4; margin-top:10px;">Anteprima onesta: già ci sono la carta d'imbarco, i temi per città, lo scanner del biglietto, il passaporto con i timbri e il traduttore offline. La generazione della lista arriva con l'aggancio a <strong>Gemini Nano</strong> (serve un Pixel 8+ o Galaxy S24+, come Apple Intelligence su iPhone). In lavorazione, aggiornata spesso.</p>
-
-    <h3 class="reveal" style="margin-top:44px; font-size:1.25rem;">🍏 Su iPhone</h3>
-    <h3 class="reveal" style="margin-top:20px; font-size:1.05rem;">🚀 TestFlight <span class="badge">IN ARRIVO</span></h3>
-    <p class="reveal" style="color:#A9B7D0; font-size:.95rem; max-width:40em; margin-top:6px;">
-      Il modo semplice: un link, due tap, fatto. Si accende appena l'app entra nel programma sviluppatori Apple — torna a trovarci.
-    </p>
-
-    <h3 class="reveal" style="margin-top:36px; font-size:1.1rem;">🛠️ Sideloading (disponibile ora, per chi mastica un po')</h3>
-    <div class="steps">
-      <div class="step reveal" style="--d:.0s">Scarica il pacchetto: <a href="ValigiaExpress-1.1.ipa" download><strong>ValigiaExpress-1.1.ipa</strong></a> — 932 KB, giuro.</div>
-      <div class="step reveal" style="--d:.07s">Sul computer installa <a href="https://altstore.io" target="_blank" rel="noopener">AltStore</a> o <a href="https://sideloadly.io" target="_blank" rel="noopener">Sideloadly</a> e collega l'iPhone.</div>
-      <div class="step reveal" style="--d:.14s">Apri l'.ipa con lo strumento scelto e accedi col tuo Apple ID: firma e installa lui.</div>
-      <div class="step reveal" style="--d:.21s">Su iPhone: Impostazioni → Generali → VPN e gestione dispositivi → autorizza. Con l'Apple ID gratuito si rinnova ogni 7 giorni.</div>
-    </div>
-    <p class="reveal" style="font-size:.8rem; color:#8FA6C4; margin-top:18px;">La generazione AI vuole un iPhone con Apple Intelligence (15 Pro o più recente, iOS 26+). Tutto il resto — scanner, mappa, guida, timbri — gira su qualsiasi iPhone con iOS 26.</p>
-  </div>
-</section>
-
-<!-- ============ AGGIORNAMENTI / PATCH ============ -->
-<section id="aggiornamenti">
-  <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Aggiornamenti</div>
-      <h2>Cosa è cambiato, patch dopo patch</h2>
-      <p class="lead">L'app cresce spesso. Qui trovi cosa porta ogni versione — le più recenti in alto.</p>
-    </div>
-
-    <div class="changelog">
-      <div class="release reveal">
-        <div class="release-badge">1.2</div>
-        <div class="release-body">
-          <h3>Assistente & persistenza</h3>
-          <div class="date">iOS · luglio 2026</div>
-          <ul>
-            <li>🎙️ L'assistente torna a parlare e può <strong>modificare la valigia</strong> per te ("aggiungi il costume")</li>
-            <li>🧰 Un unico hub "Assistente & servizi": SOS, trasporti, hotel e traduttore insieme</li>
-            <li>💾 La tua valigia <strong>non si perde più</strong> alla riapertura, spunte comprese</li>
-            <li>🧳 Valigia in un'unica lista ordinata, più facile da spuntare</li>
-            <li>🏨 Scegli tu se aprire Booking o Airbnb</li>
-            <li>👋 Le abitudini si impostano subito, al primo avvio</li>
-          </ul>
-        </div>
+    <div class="dual">
+      <div class="card-i rv">
+        <h3>🤖 Android <span class="badge">Pronta ora</span></h3>
+        <p style="color:var(--muted);font-size:.94rem">Un tap e ce l'hai. Al primo
+        download Android chiede di autorizzare l'installazione da questa fonte: è normale.</p>
+        <ol class="steps">
+          <li>Scarica il file .apk</li>
+          <li>Aprilo e conferma l'installazione</li>
+          <li>Fatto — nessuna scadenza</li>
+        </ol>
+        <a class="btn btn-primary" href="ValigiaExpress-android.apk" download style="align-self:flex-start">Scarica .apk (~73 MB)</a>
+        <p class="note">La lista generata arriva con Gemini Nano, che gira solo su
+        Pixel 8+ e Galaxy S24+. Il resto funziona ovunque.</p>
       </div>
 
-      <div class="release reveal" style="--d:.08s">
-        <div class="release-badge old">1.1</div>
-        <div class="release-body">
-          <h3>Il mondo intero</h3>
-          <div class="date">iOS · luglio 2026</div>
-          <ul>
-            <li>📮 Sfondi a francobolli e temi colore per città</li>
-            <li>📡 Risparmio dati e cache offline per l'estero</li>
-            <li>✈️ Countdown e valigia sulla Lock Screen e Dynamic Island</li>
-            <li>🇮🇹 🇬🇧 🇯🇵 Interfaccia e AI in tre lingue</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="release reveal" style="--d:.16s">
-        <div class="release-badge old">1.0</div>
-        <div class="release-body">
-          <h3>Il primo decollo</h3>
-          <div class="date">luglio 2026</div>
-          <ul>
-            <li>✨ Lista valigia con l'AI on-device e meteo reale</li>
-            <li>📷 Scanner della carta d'imbarco, mappa, guida da local, passaporto con timbri</li>
-            <li>🤖 Prima versione Android (anteprima)</li>
-          </ul>
-        </div>
+      <div class="card-i rv">
+        <h3>🍏 iPhone <span class="badge warn">Serve il Mac</span></h3>
+        <p style="color:var(--muted);font-size:.94rem">Con l'account sviluppatore
+        gratuito l'app va installata dal computer e va rinnovata ogni 7 giorni.</p>
+        <ol class="steps">
+          <li>Serve iOS 26 e Apple Intelligence</li>
+          <li>Si compila da Xcode e si installa via cavo</li>
+          <li>Poi si autorizza da Impostazioni → Generali → VPN e gestione dispositivi</li>
+        </ol>
+        <p class="note">TestFlight arriverà con l'account sviluppatore a pagamento.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SEGNALA UN BUG ============ -->
-<section class="bug" id="segnala">
-  <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Trovato qualcosa che non va?</div>
-      <h2>Segnala un bug</h2>
-      <p>Se qualcosa si comporta male o hai un'idea, scrivilo: ogni segnalazione aiuta a rendere l'app migliore. Si apre una scheda già pronta da compilare — di' cosa è successo, su che telefono e quale versione. Niente dati personali richiesti.</p>
-      <a class="btn-report reveal"
-         href="https://github.com/matteoalbanesi79-commits/valigia-express/issues/new?labels=bug&title=Bug%3A%20&body=%2A%2ACosa%20%C3%A8%20successo%3A%2A%2A%0A%0A%0A%2A%2ACosa%20ti%20aspettavi%3A%2A%2A%0A%0A%0A%2A%2APassi%20per%20riprodurlo%3A%2A%2A%0A1.%20%0A2.%20%0A%0A---%0ATelefono%20(es.%20iPhone%2015%20%2F%20Pixel%208)%3A%20%0AVersione%20app%3A%20"
-         target="_blank" rel="noopener">
-        🐞 Segnala un bug su GitHub
-      </a>
-      <p style="font-size:.8rem; margin-top:16px; color:#F3C9C9;">Serve un account GitHub gratuito. È anche l'elenco pubblico dei bug noti e di cosa è in lavorazione.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ CHANGELOG ============ -->
+<!-- ============ NOVITÀ (uno solo) ============ -->
 <section id="novita">
   <div class="wrap">
-    <div class="reveal">
-      <div class="kicker">Novità</div>
-      <h2>Cosa è cambiato di recente</h2>
-      <p class="lead">Ogni aggiornamento dell'app finisce anche qui. Le stesse novità le trovi nel foglio "Novità" dentro l'app.</p>
+    <div class="sec-head rv">
+      <div class="kicker mono">Diario di bordo</div>
+      <h2>Cosa è cambiato.</h2>
+      <p class="lead">Le stesse novità che trovi nel foglio "Novità" dentro l'app.</p>
     </div>
-    <div class="changelog">
-      <div class="release reveal">
-        <div class="ver">Android v1.1</div>
+
+    <div class="log">
+      <div class="rel now rv">
+        <div class="rel-head">
+          <span class="rel-v">Android 1.1</span>
+          <span class="plat">Android · luglio 2026</span>
+        </div>
         <ul>
-          <li>👋 <strong>Benvenuto guidato</strong>: al primo avvio un carosello presenta le funzioni e ti chiede due righe su di te — da lì in poi ogni lista è più tua</li>
-          <li>🗣️ <strong>Traduttore offline</strong>: scarichi la lingua una volta e traduci anche in aereo, in 8 lingue. Nessun account, nessuna chiave, tutto sul telefono</li>
+          <li>👋 <strong>Benvenuto guidato</strong>: al primo avvio un carosello presenta le funzioni e ti chiede due righe su di te</li>
+          <li>🗣️ <strong>Traduttore offline</strong>: scarichi la lingua una volta e traduci anche in aereo, in 8 lingue</li>
           <li>🆕 <strong>Foglio "Novità"</strong> anche su Android, a ogni aggiornamento</li>
           <li>📦 Pacchetto più snello: tolte le architetture che servivano solo ai vecchi emulatori</li>
         </ul>
       </div>
-      <div class="release reveal" style="--d:.02s">
-        <div class="ver">v1.4</div>
+
+      <div class="rel rv">
+        <div class="rel-head">
+          <span class="rel-v">1.4</span>
+          <span class="plat">iPhone · luglio 2026</span>
+        </div>
         <ul>
-          <li>🧭 <strong>Un concierge che conosce il viaggio</strong>: l'assistente ora sa date, meteo reale e cosa hai in valigia — chiedigli un itinerario o cosa vedere se piove. E lo apri anche dalla schermata della valigia</li>
+          <li>🧭 <strong>Un concierge che conosce il viaggio</strong>: sa date, meteo reale e cosa hai in valigia. E lo apri anche dalla schermata della valigia</li>
         </ul>
       </div>
-      <div class="release reveal" style="--d:.04s">
-        <div class="ver">v1.3</div>
+
+      <div class="rel rv">
+        <div class="rel-head">
+          <span class="rel-v">1.3</span>
+          <span class="plat">iPhone · luglio 2026</span>
+        </div>
         <ul>
-          <li>✅ <strong>Gli essenziali, sempre</strong>: mutande, calzini, spazzolino, dentifricio — se il modello li dimentica, l'app li aggiunge da sola</li>
-          <li>🐛 Corretto: nell'onboarding ora si scrive nei campi del profilo</li>
-          <li>➡️ <strong>Dritto alla valigia</strong>: premi il bottone e il modulo sparisce, resta solo la lista. Freccia in alto per un nuovo viaggio</li>
-          <li>🤖 Android vestita come iPhone: stessi colori, stesse forme arrotondate</li>
-          <li>🗓️ Android: date del viaggio, Impostazioni e Passaporto con i timbri (come iPhone)</li>
+          <li>➡️ <strong>Dritto alla valigia</strong>: premi il bottone e resta solo la lista</li>
+          <li>🗓️ Android: date del viaggio, Impostazioni e Passaporto con i timbri</li>
           <li>✈️ Icona rinnovata: un vero aereo che segue la rotta</li>
         </ul>
       </div>
-      <div class="release reveal" style="--d:.04s">
-        <div class="ver">v1.2</div>
+
+      <div class="rel rv">
+        <div class="rel-head">
+          <span class="rel-v">1.2</span>
+          <span class="plat">iPhone · luglio 2026</span>
+        </div>
         <ul>
-          <li>🚗 <strong>Percorso in auto sulla strada vera</strong> — sulla mappa scegli Aereo o Auto</li>
-          <li>🚆 <strong>Scanner treni e pullman</strong> — non solo carte d'imbarco</li>
-          <li>🔍 <strong>Mappa più pulita</strong> — la rotta si toglie quando cerchi posti; pulsanti sistemati</li>
-          <li>🧹 Assistente non più duplicato: si apre dal Tasto Azione e dalla card del viaggio</li>
+          <li>🚗 <strong>Percorso in auto sulla strada vera</strong>: sulla mappa scegli Aereo o Auto</li>
+          <li>🚆 <strong>Scanner treni e pullman</strong>, non solo carte d'imbarco</li>
+          <li>💾 La valigia non si perde più alla riapertura, spunte comprese</li>
+          <li>🏨 Scegli tu se aprire Booking o Airbnb</li>
         </ul>
       </div>
-      <div class="release reveal" style="--d:.08s">
-        <div class="ver">v1.1</div>
+
+      <div class="rel rv">
+        <div class="rel-head">
+          <span class="rel-v">1.1</span>
+          <span class="plat">iPhone · luglio 2026</span>
+        </div>
         <ul>
-          <li>📮 Sfondi a francobolli per città a tema (Tokyo, Parigi…)</li>
+          <li>📮 Sfondi a francobolli e temi colore per ~30 città</li>
           <li>📡 Risparmio dati e cache offline per l'estero</li>
           <li>✈️ Countdown sulla Lock Screen e nella Dynamic Island</li>
           <li>🌍 Interfaccia e AI in italiano, inglese e giapponese</li>
         </ul>
       </div>
-      <div class="release reveal" style="--d:.16s">
-        <div class="ver">v1.0</div>
+
+      <div class="rel rv">
+        <div class="rel-head">
+          <span class="rel-v">1.0</span>
+          <span class="plat">iPhone · luglio 2026</span>
+        </div>
         <ul>
-          <li>🧳 Lista valigia su misura con l'AI on-device e il meteo reale</li>
-          <li>📷 Scansione della carta d'imbarco, mappa del viaggio, passaporto con timbri</li>
+          <li>🧳 Lista valigia su misura con l'AI del telefono e il meteo reale</li>
+          <li>📷 Scanner della carta d'imbarco, mappa del viaggio, passaporto con timbri</li>
         </ul>
       </div>
     </div>
@@ -648,63 +758,282 @@
 </section>
 
 <!-- ============ PRIVACY ============ -->
-<section>
-  <div class="wrap" style="text-align:center;">
-    <div class="reveal">
-      <div class="kicker">Privacy</div>
-      <h2>I tuoi viaggi sono affari tuoi</h2>
-      <p class="lead" style="margin:0 auto;">Non c'è niente da accettare, niente da tracciare, nessun "continua con Google". Il viaggio resta tra te e il tuo iPhone — letteralmente.</p>
+<section id="privacy">
+  <div class="wrap">
+    <div class="sec-head rv" style="margin:0 auto;text-align:center;max-width:24ch">
+      <div class="kicker mono">Privacy</div>
+      <h2>I tuoi viaggi sono affari tuoi.</h2>
     </div>
-    <div class="privacy-strip">
-      <div class="stat reveal" style="--d:.0s"><div class="n">0</div><div class="l">account richiesti</div></div>
-      <div class="stat reveal" style="--d:.08s"><div class="n">0</div><div class="l">dati raccolti</div></div>
-      <div class="stat reveal" style="--d:.16s"><div class="n">0</div><div class="l">server e analytics</div></div>
-      <div class="stat reveal" style="--d:.24s"><div class="n">4 MB</div><div class="l">tutto qui</div></div>
-    </div>
+    <p class="lead rv" style="text-align:center">
+      Non c'è niente da accettare, niente da tracciare, nessun "continua con
+      Google". Il viaggio resta tra te e il tuo telefono — letteralmente.
+      Anche questo sito non ha cookie né statistiche.
+    </p>
   </div>
 </section>
 
 <footer>
-  <p class="mono">VALIGIA EXPRESS · VE 026</p>
-  <p style="margin-top:8px;">Fatta con ☕️ e Foundation Models · Meteo di <a href="https://open-meteo.com" style="color:var(--petrol)">Open-Meteo</a></p>
-  <p style="margin-top:4px;">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
+  <p class="mono">Valigia Express · VE 026</p>
+  <p>Fatta con ☕️ e i modelli on-device · Meteo di <a href="https://open-meteo.com">Open-Meteo</a></p>
+  <p style="margin-top:6px">Foto del finestrino: <a href="https://unsplash.com/@dewang">Dewang Gupta</a> su Unsplash</p>
+  <p style="margin-top:6px">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
 </footer>
 
 <script>
-  // Comparsa allo scroll (rispetta "riduci movimento")
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const targets = document.querySelectorAll('.reveal');
-  if (reduce || !('IntersectionObserver' in window)) {
-    targets.forEach(el => el.classList.add('in'));
-  } else {
-    const io = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      }
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    targets.forEach(el => io.observe(el));
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- cursore ad alone ----------
+     Il puntino segue subito, l'alone insegue con un po' di ritardo:
+     è quel filo di elastico che fa sembrare la pagina "viva".      */
+  const halo = document.getElementById('halo');
+  const dot = document.getElementById('dot');
+  const fine = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  if (fine && !reduce) {
+    document.documentElement.classList.add('cur-custom');
+    let mx = innerWidth / 2, my = innerHeight / 2, hx = mx, hy = my;
+
+    addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx}px, ${my}px)`;
+      if (!halo.classList.contains('on')) { halo.classList.add('on'); dot.classList.add('on'); }
+    }, { passive: true });
+
+    addEventListener('mouseleave', () => { halo.classList.remove('on'); dot.classList.remove('on'); });
+
+    (function follow() {
+      hx += (mx - hx) * .16;
+      hy += (my - hy) * .16;
+      halo.style.transform = `translate(${hx}px, ${hy}px)`;
+      requestAnimationFrame(follow);
+    })();
+
+    // si allarga su tutto ciò che si può toccare
+    const hot = 'a, button, input, select, .chip, .pass, .feat';
+    addEventListener('mouseover', (e) => {
+      if (e.target.closest(hot)) halo.classList.add('hot');
+    }, { passive: true });
+    addEventListener('mouseout', (e) => {
+      if (e.target.closest(hot)) halo.classList.remove('hot');
+    }, { passive: true });
   }
+
+  /* ---------- comparsa allo scroll ---------- */
+  const rv = document.querySelectorAll('.rv');
+  if (reduce || !('IntersectionObserver' in window)) {
+    rv.forEach(e => e.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((es) => {
+      es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: .15 });
+    rv.forEach(e => io.observe(e));
+  }
+
+  /* ---------- le funzioni compaiono solo quando ci arrivi ---------- */
+  const feats = document.querySelectorAll('.feat');
+  if (reduce || !('IntersectionObserver' in window)) {
+    feats.forEach(e => e.classList.add('seen'));
+  } else {
+    const fio = new IntersectionObserver((es) => {
+      es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('seen'); fio.unobserve(e.target); }
+      });
+    }, { threshold: .35, rootMargin: '0px 0px -12% 0px' });
+    feats.forEach(e => fio.observe(e));
+  }
+
+  /* ---------- nav che si stacca ---------- */
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => nav.classList.toggle('stuck', scrollY > 20), { passive: true });
+
+  /* ---------- numeri che salgono ---------- */
+  const nums = document.querySelectorAll('[data-count]');
+  const nio = new IntersectionObserver((es) => {
+    es.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target, to = +el.dataset.count;
+      nio.unobserve(el);
+      if (reduce || to === 0) { el.textContent = to; return; }
+      let n = 0;
+      const step = () => {
+        n += Math.max(1, Math.ceil(to / 22));
+        if (n >= to) { el.textContent = to; return; }
+        el.textContent = n;
+        requestAnimationFrame(step);
+      };
+      step();
+    });
+  }, { threshold: .6 });
+  nums.forEach(n => nio.observe(n));
+
+  /* ---------- parallasse leggero sul finestrino e sul telefono ----
+     Mentre scorri, finestrino e telefono si muovono a velocità un po'
+     diverse: dà profondità, come guardare fuori da un mezzo in corsa. */
+  const par = document.querySelectorAll('[data-parallax]');
+  if (!reduce && par.length && matchMedia('(min-width:940px)').matches) {
+    let ticking = false;
+    const clamp = (v, m) => Math.max(-m, Math.min(m, v));
+    const apply = () => {
+      const mid = innerHeight / 2;
+      par.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const d = clamp((r.top + r.height / 2 - mid) * +el.dataset.parallax, 34);
+        el.style.setProperty('--py', d.toFixed(1) + 'px');
+      });
+      ticking = false;
+    };
+    // uso una variabile CSS così non calpesto le altre transform (float ecc.)
+    const style = document.createElement('style');
+    style.textContent = '.window,.phone{translate:0 var(--py,0)}';
+    document.head.appendChild(style);
+    addEventListener('scroll', () => { if (!ticking) { requestAnimationFrame(apply); ticking = true; } }, { passive: true });
+    apply();
+  }
+
+  /* ================================================================
+     DEMO: meteo vero da Open-Meteo + lista generata con regole.
+     Stessa fonte dell'app, nessuna chiave, nessun server nostro.
+     ================================================================ */
+  const out = document.getElementById('out');
+  const inCity = document.getElementById('q-city');
+  const inDays = document.getElementById('q-days');
+  const inType = document.getElementById('q-type');
+  const btn = document.getElementById('q-go');
+
+  document.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => { inCity.value = c.dataset.c; go(); });
+  });
+  btn.addEventListener('click', go);
+  inCity.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+
+  function loading(msg) {
+    out.innerHTML = `<div class="demo-empty"><div class="spinner"></div><p>${msg}</p></div>`;
+  }
+  function oops(msg) {
+    out.innerHTML = `<div class="demo-empty"><span class="big">🤔</span><p>${msg}</p></div>`;
+  }
+
+  async function go() {
+    const city = inCity.value.trim();
+    if (!city) { inCity.focus(); return; }
+    const days = Math.min(21, Math.max(1, +inDays.value || 5));
+    const type = inType.value;
+
+    btn.disabled = true;
+    loading('Cerco la città…');
+
+    try {
+      const g = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=it&format=json`).then(r => r.json());
+      if (!g.results || !g.results.length) { oops(`Non trovo "${city}". Prova col nome in italiano o in inglese.`); return; }
+      const place = g.results[0];
+
+      loading('Guardo che tempo farà…');
+      const fc = Math.min(16, days);
+      const w = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=${fc}&timezone=auto`).then(r => r.json());
+
+      const tmax = w.daily.temperature_2m_max.filter(n => n !== null);
+      const tmin = w.daily.temperature_2m_min.filter(n => n !== null);
+      const rain = (w.daily.precipitation_probability_max || []).filter(n => n !== null);
+      const max = Math.round(Math.max(...tmax));
+      const min = Math.round(Math.min(...tmin));
+      const media = Math.round(tmax.reduce((a, b) => a + b, 0) / tmax.length);
+      const pioggia = rain.length ? Math.round(Math.max(...rain)) : 0;
+
+      render(place, { max, min, media, pioggia, giorni: tmax.length }, days, type);
+    } catch (e) {
+      oops('Il meteo non risponde. Riprova fra un attimo.');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function render(place, wx, days, type) {
+    const cats = lista(wx, days, type);
+    const nome = [place.name, place.country].filter(Boolean).join(', ');
+    const emoji = wx.pioggia > 55 ? '🌧️' : wx.media >= 26 ? '☀️' : wx.media <= 8 ? '🧊' : '⛅️';
+
+    let html = `
+      <div class="wx">
+        <div class="t">${emoji} ${wx.media}°</div>
+        <div>
+          <div class="where">${nome}</div>
+          <div class="mono">Min ${wx.min}° · Max ${wx.max}° · Pioggia ${wx.pioggia}%</div>
+        </div>
+        <div class="note">${frase(wx, days)}</div>
+      </div>
+      <div class="cats">`;
+
+    let i = 0;
+    for (const [nomeCat, items] of Object.entries(cats)) {
+      html += `<div class="cat"><h4>${nomeCat}</h4><ul>`;
+      for (const it of items) html += `<li style="animation-delay:${(i++ * 22)}ms">${it}</li>`;
+      html += `</ul></div>`;
+    }
+    html += `</div>
+      <p class="demo-foot">Meteo reale di Open-Meteo per i prossimi ${wx.giorni} giorni.
+      Questa è la versione ridotta: nell'app la lista la scrive l'AI del telefono,
+      che tiene conto anche dei tuoi gusti e delle tue abitudini.</p>`;
+
+    out.innerHTML = html;
+  }
+
+  function frase(wx, days) {
+    const p = [];
+    if (wx.media >= 27) p.push('Fa caldo davvero');
+    else if (wx.media >= 19) p.push('Clima mite');
+    else if (wx.media >= 11) p.push('Fresco');
+    else if (wx.media >= 3) p.push('Freddo');
+    else p.push('Fa proprio freddo');
+    if (wx.max - wx.min >= 12) p.push('con sbalzi forti tra giorno e notte: vestiti a strati');
+    if (wx.pioggia >= 60) p.push('e pioverà quasi di sicuro');
+    else if (wx.pioggia >= 30) p.push('e qualche rovescio ci scappa');
+    return p.join(', ') + `. ${days} giorni.`;
+  }
+
+  /* Regole di buon senso per la demo: nell'app vera la lista la scrive
+     il modello on-device. */
+  function lista(wx, days, type) {
+    const n = Math.min(days, 10);
+    const c = {};
+
+    c['Sempre'] = [
+      `Mutande × ${days + 1}`,
+      `Calzini × ${days + 1}`,
+      'Spazzolino e dentifricio',
+      'Deodorante',
+      'Caricabatterie',
+      'Documenti e carta d\'identità'
+    ];
+
+    const v = [];
+    if (wx.media >= 24) v.push(`Magliette leggere × ${n}`, 'Pantaloncini', 'Occhiali da sole', 'Cappellino');
+    else if (wx.media >= 16) v.push(`Magliette × ${n}`, 'Una felpa', 'Jeans o pantaloni lunghi', 'Giacca leggera per la sera');
+    else if (wx.media >= 8) v.push(`Maglie a maniche lunghe × ${n}`, 'Maglione', 'Giacca pesante', 'Sciarpa');
+    else v.push('Termico sotto (sopra e sotto)', 'Maglione pesante', 'Piumino', 'Berretto, sciarpa e guanti');
+    if (wx.max - wx.min >= 12) v.push('Un pile da mettere e togliere');
+    c['Vestiti'] = v;
+
+    const s = [];
+    if (wx.pioggia >= 40) s.push('Ombrello pieghevole', 'Giacca impermeabile');
+    if (wx.media >= 24) s.push('Crema solare', 'Costume');
+    if (wx.media <= 5) s.push('Crema per le labbra');
+    s.push('Powerbank', 'Adattatore di corrente');
+    c['Se serve'] = s;
+
+    const t = [];
+    if (type === 'Mare / spiaggia') t.push('Costume di scorta', 'Telo mare', 'Infradito', 'Doposole');
+    else if (type === 'Montagna / trekking') t.push('Scarponcini', 'Zaino da giorno', 'Borraccia', 'Calze tecniche');
+    else if (type === 'Lavoro / business') t.push('Camicie stirate', 'Scarpe eleganti', 'Portatile e caricatore', 'Blocco per appunti');
+    else if (type === 'Neve / sci') t.push('Guanti da neve', 'Maschera', 'Doposci', 'Crema solare alta protezione');
+    else t.push('Scarpe comode da camminata', 'Borsa piccola da giorno');
+    c[type.split(' ')[0]] = t;
+
+    return c;
+  }
+})();
 </script>
-
-<!-- ============================================================
-     STATISTICHE DEL SITO — GoatCounter (gratis, senza cookie)
-     Per attivarle (5 minuti, una volta sola):
-       1. Vai su https://www.goatcounter.com e crea un account gratuito.
-       2. Scegli un codice, es. "valigiaexpress" → il tuo indirizzo
-          diventa https://valigiaexpress.goatcounter.com
-       3. Qui sotto, sostituisci TUOCODICE con quello scelto e togli
-          i commenti <!-- --> intorno allo <script>.
-       4. Commit + push: da lì vedrai visite, pagine e provenienze
-          sul pannello di GoatCounter. Nessun cookie, niente dati
-          personali — coerente con la filosofia dell'app.
-     ============================================================ -->
-<!--
-<script data-goatcounter="https://TUOCODICE.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
--->
-
 </body>
 </html>
