@@ -346,33 +346,52 @@ h1 em{font-style:normal;color:var(--petrol)}
 .spinner{width:24px;height:24px;border:2.5px solid rgba(8,100,120,.25);border-top-color:var(--petrol-deep);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* --- FUNZIONI: blocchi liberi, non incasellati -------------------- */
-.flow{display:flex;flex-direction:column;gap:clamp(90px,14vw,210px);position:relative}
-.feat{max-width:min(600px,88%);position:relative}
-.feat[data-x="r"]{margin-left:auto;text-align:right}
-.feat[data-x="r"] .kick{flex-direction:row-reverse}
-.feat[data-x="c"]{margin-inline:auto}
-.feat[data-x="in"]{margin-left:clamp(0px,10vw,150px)}
-.feat .kick{
+/* --- FUNZIONI: righe foto + testo, alternate ----------------------
+   Ogni funzione ha una foto vera (viaggio) o uno screenshot dell'app.
+   Le righe si alternano: foto a sinistra, poi a destra.            */
+.flow{display:flex;flex-direction:column;gap:clamp(64px,9vw,128px)}
+.feat{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(28px,5vw,72px);align-items:center;
+}
+.feat[data-x="r"] .feat-media{order:2}   /* foto a destra */
+
+.feat-media{
+  border-radius:24px;overflow:hidden;position:relative;aspect-ratio:4/3;
+  box-shadow:0 40px 80px -42px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.06);
+}
+.feat-media img{width:100%;height:100%;object-fit:cover;display:block;
+  transform:scale(1.04);transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
+.feat.seen .feat-media img{transform:scale(1)}
+/* screenshot app: telefono su pannello colorato, non ritagliato */
+.feat-media.app{
+  aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(150deg,var(--bg-3),var(--bg-2));
+}
+.feat-media.app img{
+  width:auto;height:88%;object-fit:contain;
+  border-radius:22px;border:4px solid #0d1526;
+  box-shadow:0 24px 50px -18px rgba(0,0,0,.7);
+  transform:scale(1) rotate(-3deg);
+}
+.feat.seen .feat-media.app img{transform:scale(1.02) rotate(-3deg)}
+
+.feat-body .kick{
   display:flex;align-items:center;gap:12px;margin-bottom:16px;
   font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;
   text-transform:uppercase;font-weight:700;color:var(--petrol);
 }
-.feat .kick::before{content:"";width:26px;height:1.5px;background:var(--petrol);flex:none}
-.feat .ico{font-size:clamp(2rem,4vw,2.8rem);display:block;margin-bottom:16px;line-height:1}
-.feat h3{font-size:clamp(1.7rem,4.6vw,3.1rem);line-height:1.02;letter-spacing:-.035em}
-.feat p{margin-top:16px;color:var(--muted);font-size:clamp(1rem,1.5vw,1.18rem);max-width:44ch}
-.feat[data-x="r"] p{margin-left:auto}
-.feat{opacity:0;transform:translate3d(-34px,52px,0)}
-.feat[data-x="r"]{transform:translate3d(34px,52px,0)}
-.feat[data-x="c"]{transform:translate3d(0,52px,0)}
-.feat.seen{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
-@media(max-width:700px){
-  .feat{max-width:100%;text-align:left!important}
-  .feat[data-x="r"],.feat[data-x="c"],.feat[data-x="in"]{margin:0}
-  .feat[data-x="r"] .kick{flex-direction:row}
-  .feat[data-x="r"] p{margin-left:0}
-  .feat,.feat[data-x="r"],.feat[data-x="c"]{transform:translate3d(0,44px,0)}
+.feat-body .kick::before{content:"";width:26px;height:1.5px;background:var(--petrol);flex:none}
+.feat-body h3{font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1.04;letter-spacing:-.035em}
+.feat-body p{margin-top:16px;color:var(--muted);font-size:clamp(1rem,1.4vw,1.16rem);max-width:42ch}
+
+.feat{opacity:0;transform:translateY(48px);
+  transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
+.feat.seen{opacity:1;transform:none}
+@media(max-width:760px){
+  .feat{grid-template-columns:1fr;gap:22px}
+  .feat[data-x="r"] .feat-media{order:0}   /* foto sempre sopra il testo */
+  .feat-media{aspect-ratio:16/10}
 }
 
 /* --- NUMERI ------------------------------------------------------- */
@@ -425,7 +444,21 @@ h1 em{font-style:normal;color:var(--petrol)}
 .rel ul strong{color:var(--text)}
 
 /* --- PRIVACY ------------------------------------------------------ */
-#privacy{text-align:center;border-top:1px solid var(--line)}
+#privacy{
+  text-align:center;position:relative;overflow:hidden;
+  border-top:1px solid var(--line);
+}
+/* foto a tutta larghezza dietro il testo, scurita per leggere bene */
+#privacy::before{
+  content:"";position:absolute;inset:0;z-index:0;
+  background:url("img/finestrino.jpg") center/cover no-repeat;
+  opacity:.35;
+}
+#privacy::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,.72) 50%,var(--bg) 100%);
+}
+#privacy .wrap{position:relative;z-index:2}
 #privacy .kicker{justify-content:center}
 #privacy .lead{margin:20px auto 0}
 
@@ -569,51 +602,64 @@ footer a{color:var(--petrol);text-decoration:none}
 
     <div class="flow">
       <div class="feat" data-x="l">
-        <span class="ico">🌦️</span>
-        <div class="kick">01 · Il meteo vero</div>
-        <h3>Guarda che tempo farà. Da sola.</h3>
-        <p>Il modello chiama un attrezzo per il meteo quando gli serve, e adatta
-        la lista al clima reale della settimana in cui parti. Non alla media
-        stagionale: proprio a quei giorni lì.</p>
+        <div class="feat-media"><img src="img/p-meteo.jpg" alt="Cielo con nuvole" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">01 · Il meteo vero</div>
+          <h3>Guarda che tempo farà. Da sola.</h3>
+          <p>Il modello controlla il meteo da solo e adatta la lista al clima reale
+          della settimana in cui parti. Non alla media stagionale: proprio a quei
+          giorni lì.</p>
+        </div>
       </div>
 
       <div class="feat" data-x="r">
-        <span class="ico">📷</span>
-        <div class="kick">02 · Lo scanner</div>
-        <h3>Inquadra il biglietto.</h3>
-        <p>Carta d'imbarco, treno o pullman: destinazione e date si compilano da
-        sole. Niente da digitare.</p>
-      </div>
-
-      <div class="feat" data-x="in">
-        <span class="ico">🗺️</span>
-        <div class="kick">03 · La mappa</div>
-        <h3>La rotta, e cosa c'è intorno.</h3>
-        <p>Volo o percorso in auto sulla strada vera. E cerchi con parole tue —
-        "posti nerd", "ramen", "vintage" — trovando i posti giusti.</p>
+        <div class="feat-media app"><img src="img/screen-home.png" alt="La schermata con la carta d'imbarco" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">02 · Lo scanner</div>
+          <h3>Inquadra il biglietto.</h3>
+          <p>Carta d'imbarco, treno o pullman: destinazione e date si compilano da
+          sole. Niente da digitare.</p>
+        </div>
       </div>
 
       <div class="feat" data-x="l">
-        <span class="ico">🧭</span>
-        <div class="kick">04 · Il concierge</div>
-        <h3>Un assistente che sa dove stai andando.</h3>
-        <p>Conosce le tue date, il meteo e cosa hai già in valigia. Gli chiedi un
-        itinerario o cosa vedere se piove — e se vuoi ti sistema la lista.</p>
+        <div class="feat-media"><img src="img/p-mappa.jpg" alt="Vista dall'alto di un incrocio di città" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">03 · La mappa</div>
+          <h3>La rotta, e cosa c'è intorno.</h3>
+          <p>Volo o percorso in auto sulla strada vera. E cerchi con parole tue —
+          "posti nerd", "ramen", "vintage" — trovando i posti giusti.</p>
+        </div>
       </div>
 
       <div class="feat" data-x="r">
-        <span class="ico">🛂</span>
-        <div class="kick">05 · Il passaporto</div>
-        <h3>Ogni viaggio lascia un timbro.</h3>
-        <p>I posti dove sei stato si collezionano, come su un passaporto vero.</p>
+        <div class="feat-media"><img src="img/p-concierge.jpg" alt="Un caffè di quartiere al tramonto" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">04 · Il concierge</div>
+          <h3>Un assistente che sa dove stai andando.</h3>
+          <p>Conosce le tue date, il meteo e cosa hai già in valigia. Gli chiedi un
+          itinerario o cosa vedere se piove — e se vuoi ti sistema la lista.</p>
+        </div>
       </div>
 
-      <div class="feat" data-x="c">
-        <span class="ico">🔒</span>
-        <div class="kick">06 · La regola</div>
-        <h3>Non esce niente da qui.</h3>
-        <p>Nessun account, nessun server, nessun tracciamento. L'unica chiamata
-        di rete è al meteo, che è pubblico e gratuito.</p>
+      <div class="feat" data-x="l">
+        <div class="feat-media"><img src="img/p-passaporto.jpg" alt="Un passaporto aperto con i timbri" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">05 · Il passaporto</div>
+          <h3>Ogni viaggio lascia un timbro.</h3>
+          <p>I posti dove sei stato si collezionano, come su un passaporto vero.
+          Insieme a gusti e abitudini, che restano solo sul tuo telefono.</p>
+        </div>
+      </div>
+
+      <div class="feat" data-x="r">
+        <div class="feat-media app"><img src="img/screen-giappone-web.jpg" alt="L'app in giapponese" loading="lazy"></div>
+        <div class="feat-body">
+          <div class="kick">06 · Tre lingue</div>
+          <h3>Parla la tua lingua.</h3>
+          <p>Interfaccia e liste in italiano, inglese e giapponese. Anche i testi
+          che scrive l'AI escono nella lingua del telefono.</p>
+        </div>
       </div>
     </div>
   </div>
@@ -775,7 +821,7 @@ footer a{color:var(--petrol);text-decoration:none}
 <footer>
   <p class="mono">Valigia Express · VE 026</p>
   <p>Fatta con ☕️ e i modelli on-device · Meteo di <a href="https://open-meteo.com">Open-Meteo</a></p>
-  <p style="margin-top:6px">Foto del finestrino: <a href="https://unsplash.com/@dewang">Dewang Gupta</a> su Unsplash</p>
+  <p style="margin-top:6px">Foto di viaggio: <a href="https://unsplash.com">Unsplash</a> (finestrino di Dewang Gupta) · Screenshot dell'app</p>
   <p style="margin-top:6px">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
 </footer>
 
