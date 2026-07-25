@@ -371,11 +371,14 @@ h1 em{font-style:normal;color:var(--petrol)}
 .scene::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
   background:
-    /* dissolvenza stretta solo agli estremi: al centro la foto respira */
-    linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,0) 20%,rgba(11,18,37,0) 80%,var(--bg) 100%),
+    /* dissolvenza agli estremi: al centro la foto respira */
+    linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,0) 26%,rgba(11,18,37,0) 74%,var(--bg) 100%),
     /* ombra morbida da sinistra, giusto per leggere il testo */
     linear-gradient(80deg,rgba(11,18,37,.82) 0%,rgba(11,18,37,.34) 40%,rgba(11,18,37,0) 68%);
 }
+/* le scene si sovrappongono di un paio di pixel: elimina la linea di
+   giunzione che il browser disegna tra due blocchi adiacenti */
+.scene + .scene{margin-top:-2px}
 .scene-in{
   position:relative;z-index:2;max-width:640px;
   opacity:0;transform:translateY(38px);
