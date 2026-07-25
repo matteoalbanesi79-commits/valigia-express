@@ -171,14 +171,15 @@ nav .links a:hover{color:var(--petrol)}
 
 /* --- la palla da piscina ------------------------------------------ */
 #ball{
-  position:absolute;z-index:2;
+  position:absolute;z-index:5;        /* davanti a tutto: è un giocattolo */
   width:clamp(74px,9vw,124px);aspect-ratio:1;
   left:0;top:0;                       /* la posizione la governa il JS */
-  cursor:grab;touch-action:none;
+  touch-action:none;
+  /* non intercetta i clic: i colpi li gestisce la sezione, così la
+     palla non blocca mai un bottone o un link che le passa sotto */
+  pointer-events:none;
   filter:drop-shadow(0 18px 26px rgba(3,12,24,.5));
-  transition:filter .2s;
 }
-#ball:active{cursor:grabbing}
 #ball svg{width:100%;height:100%;display:block;position:relative;z-index:2}
 /* la parte immersa: un'ombra ovale che sta sull'acqua */
 .ball-shadow{
@@ -997,14 +998,15 @@ footer a{color:var(--petrol);text-decoration:none}
     function misura() {
       const r = hero.getBoundingClientRect();
       W = r.width; H = r.height; S = ball.offsetWidth;
-      pelo = H * .58;                       // la quota a cui galleggia
+      // galleggia in basso, dove non c'è testo da coprire
+      pelo = H - S * 1.7;
       x = Math.min(Math.max(x, 0), W - S);
       y = Math.min(Math.max(y, 0), H - S);
     }
 
     function avvia() {
       misura();
-      x = W * .70; y = pelo; vx = .5; vy = 0;
+      x = W * .34; y = pelo; vx = .5; vy = 0;
     }
 
     function passo() {
