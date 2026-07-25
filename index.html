@@ -131,6 +131,74 @@ nav .links a:hover{color:var(--petrol)}
 #hero{
   min-height:100svh;display:flex;align-items:center;
   padding-top:clamp(90px,12vh,150px);padding-bottom:clamp(60px,8vh,110px);
+  position:relative;overflow:hidden;
+}
+
+/* --- la piscina --------------------------------------------------
+   Foto d'acqua vera, con una lentissima deriva: sembra corrente.
+   Sopra, un velo che la immerge nel blu notte del sito.            */
+.pool{position:absolute;inset:0;z-index:0;pointer-events:none}
+.pool-img{
+  position:absolute;inset:-8%;
+  background:url("img/p-acqua.jpg") center/cover no-repeat;
+  animation:deriva 34s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes deriva{
+  from{transform:scale(1.06) translate3d(0,0,0)}
+  to{transform:scale(1.14) translate3d(-2.5%,-2%,0)}
+}
+/* seconda copia sfalsata: le due si sovrappongono e l'acqua "vibra" */
+.pool-caustics{
+  position:absolute;inset:-8%;
+  background:url("img/p-acqua.jpg") center/cover no-repeat;
+  opacity:.34;mix-blend-mode:screen;
+  animation:deriva2 26s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes deriva2{
+  from{transform:scale(1.18) translate3d(1.5%,1%,0) rotate(.6deg)}
+  to{transform:scale(1.08) translate3d(-1%,-1.5%,0) rotate(-.4deg)}
+}
+/* il velo: l'acqua resta leggibile ma il sito resta blu notte */
+#hero::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(11,18,37,.62) 0%,rgba(11,18,37,.24) 42%,rgba(11,18,37,.88) 100%),
+    linear-gradient(78deg,rgba(11,18,37,.88) 0%,rgba(11,18,37,.34) 48%,rgba(11,18,37,0) 82%);
+}
+#hero > .wrap{position:relative;z-index:3}
+
+/* --- la palla da piscina ------------------------------------------ */
+#ball{
+  position:absolute;z-index:2;
+  width:clamp(74px,9vw,124px);aspect-ratio:1;
+  left:0;top:0;                       /* la posizione la governa il JS */
+  cursor:grab;touch-action:none;
+  filter:drop-shadow(0 18px 26px rgba(3,12,24,.5));
+  transition:filter .2s;
+}
+#ball:active{cursor:grabbing}
+#ball svg{width:100%;height:100%;display:block;position:relative;z-index:2}
+/* la parte immersa: un'ombra ovale che sta sull'acqua */
+.ball-shadow{
+  position:absolute;left:6%;right:6%;bottom:-9%;height:26%;
+  background:radial-gradient(ellipse at center,rgba(2,20,34,.5),transparent 72%);
+  border-radius:50%;z-index:1;
+}
+#ball:focus-visible{outline:3px solid var(--petrol-lite);outline-offset:6px;border-radius:50%}
+/* lo schizzo quando la palla viene colpita: un'onda che si allarga */
+.splash{
+  position:absolute;z-index:2;pointer-events:none;
+  width:26px;height:10px;margin:-5px 0 0 -13px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.75);
+  animation:onda .7s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes onda{
+  to{transform:scale(6);opacity:0;border-width:.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .pool-img,.pool-caustics{animation:none}
 }
 .hero-grid{
   display:grid;grid-template-columns:1.15fr .85fr;
@@ -551,6 +619,37 @@ footer a{color:var(--petrol);text-decoration:none}
 
 <!-- ============ HERO ============ -->
 <section id="hero">
+  <!-- l'acqua della piscina: la foto si muove piano, come una corrente -->
+  <div class="pool" aria-hidden="true">
+    <div class="pool-img"></div>
+    <div class="pool-caustics"></div>
+  </div>
+  <!-- la palla: si può colpire davvero, col mouse o col dito -->
+  <div id="ball" role="button" tabindex="0" aria-label="Palla da piscina: colpiscila">
+    <svg viewBox="0 0 100 100">
+      <defs>
+        <radialGradient id="bl" cx="34%" cy="30%" r="72%">
+          <stop offset="0%" stop-color="#fff" stop-opacity=".95"/>
+          <stop offset="45%" stop-color="#fff" stop-opacity=".18"/>
+          <stop offset="100%" stop-color="#0a1a2a" stop-opacity=".38"/>
+        </radialGradient>
+        <clipPath id="cp"><circle cx="50" cy="50" r="49"/></clipPath>
+      </defs>
+      <g clip-path="url(#cp)">
+        <circle cx="50" cy="50" r="49" fill="#fdfdfb"/>
+        <path d="M50 1 A49 49 0 0 1 82 15 L50 50 Z" fill="#E4483F"/>
+        <path d="M82 15 A49 49 0 0 1 96 62 L50 50 Z" fill="#F5B93B"/>
+        <path d="M96 62 A49 49 0 0 1 62 96 L50 50 Z" fill="#2F9E5E"/>
+        <path d="M62 96 A49 49 0 0 1 15 82 L50 50 Z" fill="#fdfdfb"/>
+        <path d="M15 82 A49 49 0 0 1 4 38 L50 50 Z" fill="#2C7FC4"/>
+        <path d="M4 38 A49 49 0 0 1 50 1 L50 50 Z" fill="#E4483F"/>
+        <circle cx="50" cy="50" r="9" fill="#fdfdfb"/>
+      </g>
+      <circle cx="50" cy="50" r="49" fill="url(#bl)"/>
+    </svg>
+    <span class="ball-shadow"></span>
+  </div>
+
   <div class="wrap hero-grid">
     <div>
       <div class="kicker mono">Anno 2026 · Volo VE 026</div>
@@ -878,6 +977,139 @@ footer a{color:var(--petrol);text-decoration:none}
 <script>
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ================================================================
+     LA PALLA DA PISCINA
+     Galleggia sull'acqua, rimbalza contro i bordi e si può colpire:
+     col mouse, col dito, o da tastiera (Invio). Fisica semplice:
+     una molla che la riporta a galla + attrito dell'acqua.
+     ================================================================ */
+  (() => {
+    const hero = document.getElementById('hero');
+    const ball = document.getElementById('ball');
+    if (!hero || !ball || reduce) { if (ball && reduce) ball.style.display = 'none'; return; }
+    const svg = ball.querySelector('svg');
+
+    let W = 0, H = 0, S = 0, pelo = 0;
+    let x = 0, y = 0, vx = 0, vy = 0, rot = 0, vrot = 0, t = 0;
+    let vivo = true;
+
+    function misura() {
+      const r = hero.getBoundingClientRect();
+      W = r.width; H = r.height; S = ball.offsetWidth;
+      pelo = H * .58;                       // la quota a cui galleggia
+      x = Math.min(Math.max(x, 0), W - S);
+      y = Math.min(Math.max(y, 0), H - S);
+    }
+
+    function avvia() {
+      misura();
+      x = W * .70; y = pelo; vx = .5; vy = 0;
+    }
+
+    function passo() {
+      if (!vivo) return;
+      t += .016;
+
+      // spinta di galleggiamento verso il pelo dell'acqua, con onda
+      const bersaglio = pelo + Math.sin(t * 1.3) * 5;
+      vy += (bersaglio - y) * .055;
+      vy *= .90;                            // l'acqua smorza il su e giù
+      vx *= .993;                           // e frena anche di lato
+
+      x += vx; y += vy;
+
+      // rimbalzi: l'acqua restituisce meno di quanto riceve
+      if (x < 0)      { x = 0;     vx = Math.abs(vx) * .74; }
+      if (x > W - S)  { x = W - S; vx = -Math.abs(vx) * .74; }
+      if (y > H - S)  { y = H - S; vy = -Math.abs(vy) * .5; }
+      if (y < 0)      { y = 0;     vy = Math.abs(vy) * .5; }
+
+      // la palla rotola in base a quanto si sposta
+      vrot += vx * .5; vrot *= .93; rot += vrot * .1;
+
+      ball.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      svg.style.transform = `rotate(${rot.toFixed(1)}deg)`;
+      requestAnimationFrame(passo);
+    }
+
+    /* un colpo: spinge la palla via dal punto toccato */
+    function colpisci(cx, cy, forza) {
+      const bx = x + S / 2, by = y + S / 2;
+      let dx = bx - cx, dy = by - cy;
+      const d = Math.hypot(dx, dy) || 1;
+      const raggio = S * .95;
+      if (d > raggio) return false;
+      const spinta = forza * (1 - d / raggio);
+      vx += (dx / d) * spinta;
+      vy += (dy / d) * spinta * .75;
+      vy -= 1.2;                            // salta un po' fuori dall'acqua
+      schizzo(bx, by);
+      return true;
+    }
+
+    /* lo schizzo: un cerchio che si allarga e svanisce */
+    function schizzo(cx, cy) {
+      const s = document.createElement('span');
+      s.className = 'splash';
+      s.style.left = cx + 'px';
+      s.style.top = (y + S * .78) + 'px';
+      hero.appendChild(s);
+      setTimeout(() => s.remove(), 700);
+    }
+
+    const puntoLocale = (e) => {
+      const r = hero.getBoundingClientRect();
+      return [e.clientX - r.left, e.clientY - r.top];
+    };
+
+    // colpo secco: click o tocco
+    hero.addEventListener('pointerdown', (e) => {
+      const [cx, cy] = puntoLocale(e);
+      if (colpisci(cx, cy, 26)) e.preventDefault();
+    });
+
+    // sfiorata: passando vicino, la palla si sposta piano
+    let ultimo = 0;
+    hero.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const ora = performance.now();
+      if (ora - ultimo < 40) return;
+      ultimo = ora;
+      const [cx, cy] = puntoLocale(e);
+      const bx = x + S / 2, by = y + S / 2;
+      const d = Math.hypot(bx - cx, by - cy);
+      if (d < S * .72) {
+        vx += ((bx - cx) / (d || 1)) * 1.5;
+        vy += ((by - cy) / (d || 1)) * .8;
+      }
+    }, { passive: true });
+
+    // da tastiera, per chi non usa il mouse
+    ball.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        vx += (Math.random() > .5 ? 1 : -1) * (7 + Math.random() * 6);
+        vy -= 7;
+        schizzo(x + S / 2, y + S / 2);
+      }
+    });
+
+    // il motore gira solo quando la piscina è sullo schermo
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((es) => {
+        es.forEach(e => {
+          const prima = vivo;
+          vivo = e.isIntersecting;
+          if (vivo && !prima) requestAnimationFrame(passo);
+        });
+      }, { threshold: .01 }).observe(hero);
+    }
+
+    addEventListener('resize', misura);
+    avvia();
+    requestAnimationFrame(passo);
+  })();
 
   /* ---------- cursore ad alone ----------
      Il puntino segue subito, l'alone insegue con un po' di ritardo:
