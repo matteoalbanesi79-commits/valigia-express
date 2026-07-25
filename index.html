@@ -215,66 +215,41 @@ nav .links a:hover{color:var(--petrol)}
 .kicker{display:inline-flex;align-items:center;gap:9px;color:var(--petrol);margin-bottom:22px}
 .kicker::before{content:"";width:34px;height:1.5px;background:var(--petrol);display:block}
 
-/* --- il finestrino dell'aereo (hero) ------------------------------
-   La foto vera fa un zoom lentissimo, come se l'aereo si muovesse;
-   davanti galleggia il telefono con l'app. È il "guardo fuori dal
-   finestrino e intanto uso l'app".                                  */
-.hero-visual{position:relative;padding:10px}
-.window{
-  position:relative;
-  border-radius:26px;
-  overflow:hidden;
-  transform:rotate(1.4deg);
-  box-shadow:0 50px 100px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
-  aspect-ratio:1100/1500;
-}
-.window img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  transform:scale(1.08);
-  animation:kenburns 26s ease-in-out infinite alternate;
-  will-change:transform;
-}
-@keyframes kenburns{
-  from{transform:scale(1.08) translate3d(0,0,0)}
-  to{transform:scale(1.2) translate3d(-2%,-3%,0)}
-}
-/* un velo di luce che scivola sul vetro ogni tanto */
-.window .glare{
-  position:absolute;top:0;left:-40%;width:35%;height:100%;
-  background:linear-gradient(105deg,transparent,rgba(255,255,255,.18),transparent);
-  transform:skewX(-14deg);
-  animation:glare 8s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes glare{
-  0%,72%{left:-45%}
-  86%,100%{left:130%}
-}
-/* leggera vignettatura per far sembrare il vetro incassato */
-.window::after{
-  content:"";position:absolute;inset:0;border-radius:26px;pointer-events:none;
-  box-shadow:inset 0 0 70px 12px rgba(4,10,22,.55);
-}
-
+/* --- il telefono che galleggia sull'acqua (hero) ------------------
+   Niente finestrino: la piscina è la protagonista. Il telefono
+   ondeggia piano, come appoggiato sul pelo dell'acqua.             */
+.hero-visual{position:relative;display:flex;justify-content:center;padding:10px}
 .phone{
-  position:absolute;
-  right:-6%;bottom:-7%;
-  width:46%;margin:0;
-  border-radius:30px;
+  position:relative;
+  width:min(62%,300px);margin:0;
+  border-radius:34px;
   overflow:hidden;
-  border:4px solid #0d1526;
-  box-shadow:0 34px 70px -20px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.05);
+  border:5px solid #0d1526;
+  box-shadow:
+    0 46px 90px -18px rgba(0,10,22,.85),
+    0 0 0 1px rgba(255,255,255,.07),
+    0 0 70px rgba(120,220,240,.16);      /* riflesso dell'acqua attorno */
   background:#0d1526;
 }
 .phone img{width:100%;display:block}
-.phone.float{animation:floaty 6.5s ease-in-out infinite}
+.phone.float{animation:floaty 7s ease-in-out infinite}
 @keyframes floaty{
   0%,100%{transform:translateY(0) rotate(-3deg)}
-  50%{transform:translateY(-16px) rotate(-3deg)}
+  50%{transform:translateY(-18px) rotate(-1.6deg)}
+}
+/* l'ombra sull'acqua sotto al telefono */
+.hero-visual::after{
+  content:"";position:absolute;left:16%;right:16%;bottom:-26px;height:38px;
+  background:radial-gradient(ellipse at center,rgba(2,18,32,.55),transparent 72%);
+  border-radius:50%;filter:blur(5px);
+  animation:ombra 7s ease-in-out infinite;
+}
+@keyframes ombra{
+  0%,100%{transform:scale(1);opacity:.75}
+  50%{transform:scale(.9);opacity:.5}
 }
 @media(max-width:940px){
-  .window{transform:none;max-width:520px;margin:0 auto}
-  .phone{width:42%;right:0;bottom:-5%}
+  .phone{width:min(56%,250px)}
 }
 
 h1 .l{display:block;overflow:hidden}
@@ -737,16 +712,11 @@ footer a{color:var(--petrol);text-decoration:none}
     </div>
 
     <div class="hero-visual">
-      <!-- il finestrino: foto vera, con uno zoom lentissimo (come se
-           l'aereo si muovesse). Davanti, il telefono con l'app. -->
-      <div class="window" data-parallax="0.06">
-        <img src="img/finestrino.jpg" alt="Vista sopra le nuvole dal finestrino di un aereo">
-        <span class="glare"></span>
-      </div>
+      <!-- il telefono galleggia sull'acqua, appoggiato al bordo vasca -->
       <figure class="phone float" data-parallax="-0.05">
         <img src="img/screen-home.png" alt="La schermata principale di Valigia Express">
       </figure>
-      <div class="stamp" style="top:-46px;right:-26px;transform:rotate(9deg);color:#B33838">
+      <div class="stamp" style="top:-30px;left:-38px;transform:rotate(-9deg);color:#B33838">
         <div class="in">
           <span class="pa">Posta Aerea</span>
           <span class="em">🗼</span>
