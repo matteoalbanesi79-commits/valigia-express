@@ -371,8 +371,10 @@ h1 em{font-style:normal;color:var(--petrol)}
 .scene::after{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
   background:
-    linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,.15) 30%,rgba(11,18,37,.15) 62%,var(--bg) 100%),
-    linear-gradient(74deg,rgba(11,18,37,.92) 0%,rgba(11,18,37,.55) 44%,rgba(11,18,37,0) 78%);
+    /* dissolvenza stretta solo agli estremi: al centro la foto respira */
+    linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,0) 20%,rgba(11,18,37,0) 80%,var(--bg) 100%),
+    /* ombra morbida da sinistra, giusto per leggere il testo */
+    linear-gradient(80deg,rgba(11,18,37,.82) 0%,rgba(11,18,37,.34) 40%,rgba(11,18,37,0) 68%);
 }
 .scene-in{
   position:relative;z-index:2;max-width:640px;
