@@ -393,9 +393,11 @@ h1 em{font-style:normal;color:var(--petrol)}
 .atmo::after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,
-    var(--bg) 0%, rgba(11,18,37,.70) 24%,
-    rgba(11,18,37,.70) 76%, var(--bg) 100%);
+    var(--bg) 0%, rgba(11,18,37,.52) 24%,
+    rgba(11,18,37,.52) 76%, var(--bg) 100%);
 }
+/* il testo fuori dalle card ha bisogno di un'ombra per staccare */
+.atmo > .wrap h2,.atmo > .wrap .lead,.atmo > .wrap .kicker{text-shadow:0 2px 22px rgba(0,0,0,.75)}
 .atmo > .wrap{position:relative;z-index:2}
 /* le card sopra la foto: vetro, non blocchi pieni */
 .atmo .card-i{
