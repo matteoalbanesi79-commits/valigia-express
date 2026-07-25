@@ -291,7 +291,8 @@ h1 em{font-style:normal;color:var(--petrol)}
 .sec-head .lead{margin-top:20px;max-width:46ch}
 
 /* --- DEMO --------------------------------------------------------- */
-#demo{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.018)}
+/* niente bordi né cambi netti di fondo: le sezioni non devono vedersi */
+#demo{background:transparent}
 .demo-shell{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:start}
 @media(max-width:940px){.demo-shell{grid-template-columns:1fr}}
 
@@ -346,59 +347,72 @@ h1 em{font-style:normal;color:var(--petrol)}
 .spinner{width:24px;height:24px;border:2.5px solid rgba(8,100,120,.25);border-top-color:var(--petrol-deep);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* --- FUNZIONI: righe foto + testo, alternate ----------------------
-   Ogni funzione ha una foto vera (viaggio) o uno screenshot dell'app.
-   Le righe si alternano: foto a sinistra, poi a destra.            */
-.flow{display:flex;flex-direction:column;gap:clamp(64px,9vw,128px)}
-.feat{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:clamp(28px,5vw,72px);align-items:center;
+/* --- SCENE: foto libere a tutta pagina, che si fondono una nell'altra
+   Niente riquadri: la foto NON è contenuto, è atmosfera. In alto e in
+   basso sfuma nel blu notte, così una scena si scioglie nella
+   successiva e non si percepisce dove finisce una sezione.          */
+/* la sezione non ha padding in fondo: la prima scena attacca subito
+   sotto il titolo, così non c'è il "salto" tra blocco e blocco */
+#funzioni{padding-bottom:0;padding-left:0;padding-right:0}
+.sec-head-wrap{padding:0 var(--edge);margin-bottom:clamp(40px,7vh,90px)}
+.scenes{padding:0}
+.scene{
+  position:relative;min-height:96svh;
+  display:flex;align-items:flex-end;
+  padding:clamp(60px,11vh,130px) var(--edge);
+  overflow:hidden;
 }
-.feat[data-x="r"] .feat-media{order:2}   /* foto a destra */
-
-.feat-media{
-  border-radius:24px;overflow:hidden;position:relative;aspect-ratio:4/3;
-  box-shadow:0 40px 80px -42px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.06);
+.scene-bg{
+  position:absolute;left:0;right:0;top:-14%;bottom:-14%;
+  background-position:center;background-size:cover;background-repeat:no-repeat;
+  will-change:transform;
 }
-.feat-media img{width:100%;height:100%;object-fit:cover;display:block;
-  transform:scale(1.04);transition:transform 1.4s cubic-bezier(.16,1,.3,1)}
-.feat.seen .feat-media img{transform:scale(1)}
-/* screenshot app: telefono su pannello colorato, non ritagliato */
-.feat-media.app{
-  aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(150deg,var(--bg-3),var(--bg-2));
+/* due veli: uno verticale per fondere sopra/sotto, uno laterale per il testo */
+.scene::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,.15) 30%,rgba(11,18,37,.15) 62%,var(--bg) 100%),
+    linear-gradient(74deg,rgba(11,18,37,.92) 0%,rgba(11,18,37,.55) 44%,rgba(11,18,37,0) 78%);
 }
-.feat-media.app img{
-  width:auto;height:88%;object-fit:contain;
-  border-radius:22px;border:4px solid #0d1526;
-  box-shadow:0 24px 50px -18px rgba(0,0,0,.7);
-  transform:scale(1) rotate(-3deg);
+.scene-in{
+  position:relative;z-index:2;max-width:640px;
+  opacity:0;transform:translateY(38px);
+  transition:opacity 1.1s cubic-bezier(.16,1,.3,1),transform 1.1s cubic-bezier(.16,1,.3,1);
 }
-.feat.seen .feat-media.app img{transform:scale(1.02) rotate(-3deg)}
-
-.feat-body .kick{
-  display:flex;align-items:center;gap:12px;margin-bottom:16px;
-  font-family:var(--mono);font-size:.66rem;letter-spacing:.28em;
-  text-transform:uppercase;font-weight:700;color:var(--petrol);
+.scene.seen .scene-in{opacity:1;transform:none}
+.scene .kick{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.3em;
+  text-transform:uppercase;font-weight:700;color:var(--petrol-lite);
 }
-.feat-body .kick::before{content:"";width:26px;height:1.5px;background:var(--petrol);flex:none}
-.feat-body h3{font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1.04;letter-spacing:-.035em}
-.feat-body p{margin-top:16px;color:var(--muted);font-size:clamp(1rem,1.4vw,1.16rem);max-width:42ch}
-
-.feat{opacity:0;transform:translateY(48px);
-  transition:opacity .9s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
-.feat.seen{opacity:1;transform:none}
+.scene .kick::before{content:"";width:28px;height:1.5px;background:var(--petrol-lite);flex:none}
+.scene h3{font-size:clamp(2rem,5.4vw,3.9rem);line-height:1.02;letter-spacing:-.04em;color:#fff}
+.scene p{
+  margin-top:16px;color:rgba(244,243,239,.86);
+  font-size:clamp(1.05rem,1.5vw,1.24rem);max-width:40ch;
+  text-shadow:0 1px 26px rgba(0,0,0,.55);
+}
+/* lo screenshot dell'app galleggia nella scena, senza cornice-contenitore */
+.scene-phone{
+  position:absolute;right:clamp(20px,8vw,140px);bottom:0;z-index:2;
+  width:clamp(180px,21vw,290px);
+  border-radius:26px;border:4px solid #0d1526;overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(0,0,0,.8);
+  transform:translateY(60px) rotate(-4deg);opacity:0;
+  transition:opacity 1.2s cubic-bezier(.16,1,.3,1),transform 1.3s cubic-bezier(.16,1,.3,1);
+}
+.scene.seen .scene-phone{opacity:1;transform:translateY(8%) rotate(-4deg)}
+.scene-phone img{width:100%;display:block}
 @media(max-width:760px){
-  .feat{grid-template-columns:1fr;gap:22px}
-  .feat[data-x="r"] .feat-media{order:0}   /* foto sempre sopra il testo */
-  .feat-media{aspect-ratio:16/10}
+  .scene{min-height:86svh}
+  .scene p{max-width:100%}
+  .scene-phone{width:150px;right:12px;opacity:.85}
 }
 
 /* --- NUMERI ------------------------------------------------------- */
 .figures{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
   gap:clamp(20px,3vw,40px);
-  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   padding:clamp(34px,4vw,54px) 0;
 }
 .fig{text-align:center}
@@ -446,17 +460,17 @@ h1 em{font-style:normal;color:var(--petrol)}
 /* --- PRIVACY ------------------------------------------------------ */
 #privacy{
   text-align:center;position:relative;overflow:hidden;
-  border-top:1px solid var(--line);
+  padding-top:clamp(120px,18vh,220px);
 }
-/* foto a tutta larghezza dietro il testo, scurita per leggere bene */
+/* foto a tutta larghezza dietro il testo, che nasce e muore nel buio */
 #privacy::before{
   content:"";position:absolute;inset:0;z-index:0;
-  background:url("img/finestrino.jpg") center/cover no-repeat;
-  opacity:.35;
+  background:url("img/p-mappa.jpg") center/cover no-repeat;
+  opacity:.30;
 }
 #privacy::after{
   content:"";position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,.72) 50%,var(--bg) 100%);
+  background:linear-gradient(180deg,var(--bg) 0%,rgba(11,18,37,.78) 42%,rgba(11,18,37,.9) 70%,var(--bg) 100%);
 }
 #privacy .wrap{position:relative;z-index:2}
 #privacy .kicker{justify-content:center}
@@ -594,16 +608,17 @@ footer a{color:var(--petrol);text-decoration:none}
 
 <!-- ============ FUNZIONI ============ -->
 <section id="funzioni">
-  <div class="wrap">
+  <div class="wrap sec-head-wrap">
     <div class="sec-head rv">
       <div class="kicker mono">Cosa sa fare</div>
       <h2>Più di una lista.</h2>
     </div>
+  </div>
 
-    <div class="flow">
-      <div class="feat" data-x="l">
-        <div class="feat-media"><img src="img/p-meteo.jpg" alt="Cielo con nuvole" loading="lazy"></div>
-        <div class="feat-body">
+  <div class="scenes">
+      <div class="scene">
+        <div class="scene-bg" data-bg="img/p-meteo.jpg" data-par="0.14"></div>
+        <div class="scene-in">
           <div class="kick">01 · Il meteo vero</div>
           <h3>Guarda che tempo farà. Da sola.</h3>
           <p>Il modello controlla il meteo da solo e adatta la lista al clima reale
@@ -612,57 +627,52 @@ footer a{color:var(--petrol);text-decoration:none}
         </div>
       </div>
 
-      <div class="feat" data-x="r">
-        <div class="feat-media app"><img src="img/screen-home.png" alt="La schermata con la carta d'imbarco" loading="lazy"></div>
-        <div class="feat-body">
+      <div class="scene">
+        <div class="scene-bg" data-bg="img/p-mappa.jpg" data-par="0.18"></div>
+        <div class="scene-in">
           <div class="kick">02 · Lo scanner</div>
           <h3>Inquadra il biglietto.</h3>
           <p>Carta d'imbarco, treno o pullman: destinazione e date si compilano da
           sole. Niente da digitare.</p>
         </div>
+        <figure class="scene-phone">
+          <img src="img/screen-home.png" alt="La schermata con la carta d'imbarco" loading="lazy">
+        </figure>
       </div>
 
-      <div class="feat" data-x="l">
-        <div class="feat-media"><img src="img/p-mappa.jpg" alt="Vista dall'alto di un incrocio di città" loading="lazy"></div>
-        <div class="feat-body">
-          <div class="kick">03 · La mappa</div>
-          <h3>La rotta, e cosa c'è intorno.</h3>
-          <p>Volo o percorso in auto sulla strada vera. E cerchi con parole tue —
-          "posti nerd", "ramen", "vintage" — trovando i posti giusti.</p>
-        </div>
-      </div>
-
-      <div class="feat" data-x="r">
-        <div class="feat-media"><img src="img/p-concierge.jpg" alt="Un caffè di quartiere al tramonto" loading="lazy"></div>
-        <div class="feat-body">
-          <div class="kick">04 · Il concierge</div>
+      <div class="scene">
+        <div class="scene-bg" data-bg="img/p-concierge.jpg" data-par="0.14"></div>
+        <div class="scene-in">
+          <div class="kick">03 · Il concierge</div>
           <h3>Un assistente che sa dove stai andando.</h3>
           <p>Conosce le tue date, il meteo e cosa hai già in valigia. Gli chiedi un
           itinerario o cosa vedere se piove — e se vuoi ti sistema la lista.</p>
         </div>
       </div>
 
-      <div class="feat" data-x="l">
-        <div class="feat-media"><img src="img/p-passaporto.jpg" alt="Un passaporto aperto con i timbri" loading="lazy"></div>
-        <div class="feat-body">
-          <div class="kick">05 · Il passaporto</div>
+      <div class="scene">
+        <div class="scene-bg" data-bg="img/p-passaporto.jpg" data-par="0.16"></div>
+        <div class="scene-in">
+          <div class="kick">04 · Il passaporto</div>
           <h3>Ogni viaggio lascia un timbro.</h3>
           <p>I posti dove sei stato si collezionano, come su un passaporto vero.
           Insieme a gusti e abitudini, che restano solo sul tuo telefono.</p>
         </div>
       </div>
 
-      <div class="feat" data-x="r">
-        <div class="feat-media app"><img src="img/screen-giappone-web.jpg" alt="L'app in giapponese" loading="lazy"></div>
-        <div class="feat-body">
-          <div class="kick">06 · Tre lingue</div>
+      <div class="scene">
+        <div class="scene-bg" data-bg="img/finestrino.jpg" data-par="0.2"></div>
+        <div class="scene-in">
+          <div class="kick">05 · Tre lingue</div>
           <h3>Parla la tua lingua.</h3>
           <p>Interfaccia e liste in italiano, inglese e giapponese. Anche i testi
           che scrive l'AI escono nella lingua del telefono.</p>
         </div>
+        <figure class="scene-phone">
+          <img src="img/screen-giappone-web.jpg" alt="L'app in giapponese" loading="lazy">
+        </figure>
       </div>
     </div>
-  </div>
 </section>
 
 <!-- ============ NUMERI ============ -->
@@ -878,17 +888,66 @@ footer a{color:var(--petrol);text-decoration:none}
     rv.forEach(e => io.observe(e));
   }
 
-  /* ---------- le funzioni compaiono solo quando ci arrivi ---------- */
-  const feats = document.querySelectorAll('.feat');
-  if (reduce || !('IntersectionObserver' in window)) {
-    feats.forEach(e => e.classList.add('seen'));
-  } else {
-    const fio = new IntersectionObserver((es) => {
+  /* ---------- le scene: testo che compare + foto in parallasse ------
+     La foto si carica solo quando la scena si avvicina (così la pagina
+     resta leggera), e scorre più lenta della pagina: è quello che fa
+     "sciogliere" una scena nell'altra invece di farle sembrare blocchi. */
+  const scenes = [...document.querySelectorAll('.scene')];
+  const bgs = [...document.querySelectorAll('.scene-bg')];
+
+  // carica la foto di sfondo poco prima che serva
+  if ('IntersectionObserver' in window) {
+    const lio = new IntersectionObserver((es) => {
       es.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('seen'); fio.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        el.style.backgroundImage = `url("${el.dataset.bg}")`;
+        lio.unobserve(el);
       });
-    }, { threshold: .35, rootMargin: '0px 0px -12% 0px' });
-    feats.forEach(e => fio.observe(e));
+    }, { rootMargin: '300px 0px' });
+    bgs.forEach(b => lio.observe(b));
+  } else {
+    bgs.forEach(b => b.style.backgroundImage = `url("${b.dataset.bg}")`);
+  }
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    scenes.forEach(s => s.classList.add('seen'));
+  } else {
+    const sio = new IntersectionObserver((es) => {
+      es.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('seen'); sio.unobserve(e.target); }
+      });
+    }, { threshold: .28 });
+    scenes.forEach(s => sio.observe(s));
+  }
+
+  if (bgs.length) {
+    let tick = false;
+    const moveScenes = () => {
+      const vh = innerHeight;
+      bgs.forEach(bg => {
+        const scena = bg.parentElement;
+        const r = scena.getBoundingClientRect();
+        const vicina = r.top < vh + 400 && r.bottom > -400;
+
+        // Rete di sicurezza: se l'osservatore non è scattato (succede
+        // quando la scheda è in secondo piano), carico e mostro comunque.
+        if (vicina) {
+          if (!bg.style.backgroundImage) bg.style.backgroundImage = `url("${bg.dataset.bg}")`;
+          if (r.top < vh * .72) scena.classList.add('seen');
+        }
+
+        if (reduce || r.bottom < -200 || r.top > vh + 200) return;
+        const centro = r.top + r.height / 2 - vh / 2;
+        bg.style.transform = `translate3d(0, ${(-centro * (+bg.dataset.par || .15)).toFixed(1)}px, 0)`;
+      });
+      tick = false;
+    };
+    addEventListener('scroll', () => {
+      if (!tick) { requestAnimationFrame(moveScenes); tick = true; }
+    }, { passive: true });
+    addEventListener('resize', moveScenes);
+    moveScenes();
   }
 
   /* ---------- nav che si stacca ---------- */
