@@ -393,16 +393,27 @@ h1 em{font-style:normal;color:var(--petrol)}
 .atmo::after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,
-    var(--bg) 0%, rgba(11,18,37,.52) 24%,
-    rgba(11,18,37,.52) 76%, var(--bg) 100%);
+    var(--bg) 0%, rgba(11,18,37,.66) 24%,
+    rgba(11,18,37,.66) 76%, var(--bg) 100%);
 }
 /* il testo fuori dalle card ha bisogno di un'ombra per staccare */
 .atmo > .wrap h2,.atmo > .wrap .lead,.atmo > .wrap .kicker{text-shadow:0 2px 22px rgba(0,0,0,.75)}
 .atmo > .wrap{position:relative;z-index:2}
-/* le card sopra la foto: vetro, non blocchi pieni */
+/* le card sopra la foto: vetro spesso — la foto si intravede intorno,
+   ma le istruzioni dentro devono restare perfettamente leggibili */
 .atmo .card-i{
-  background:rgba(17,27,51,.62);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:rgba(13,21,42,.90);
+  backdrop-filter:blur(18px) saturate(120%);
+  -webkit-backdrop-filter:blur(18px) saturate(120%);
+  border-color:rgba(255,255,255,.14);
+}
+/* il changelog: righe su vetro, stessa logica */
+.atmo .log{
+  background:rgba(13,21,42,.86);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-radius:24px;
+  padding:clamp(24px,4vw,44px) clamp(20px,3vw,38px);
+  padding-left:clamp(38px,6vw,72px);
 }
 .scene-in{
   position:relative;z-index:2;max-width:640px;
