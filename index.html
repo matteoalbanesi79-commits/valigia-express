@@ -287,16 +287,50 @@ h1 em{font-style:normal;color:var(--petrol)}
 .hero-facts{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 26px;color:var(--muted)}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
 
+/* --- Liquid Glass: pulsanti di vetro -----------------------------
+   Trasparenti, con lo sfondo che si vede sfocato attraverso, un bordo
+   che raccoglie la luce e un riflesso sul lato alto. Come iOS 26.   */
+.btn,.demo-btn,.chip{
+  position:relative;overflow:hidden;isolation:isolate;
+  background:rgba(255,255,255,.10);
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),      /* luce sul bordo alto */
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 8px 26px rgba(3,10,24,.34);
+}
+/* il riflesso che scivola sul vetro */
+.btn::before,.demo-btn::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(160deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.06) 34%,transparent 62%);
+}
 .btn{
   display:inline-flex;align-items:center;gap:9px;
   padding:14px 26px;border-radius:100px;
-  font-weight:650;font-size:.95rem;text-decoration:none;
-  border:1.5px solid var(--line-2);color:var(--text);
-  transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s,color .25s,box-shadow .25s,border-color .25s;
+  font-weight:650;font-size:.95rem;text-decoration:none;color:var(--text);
+  transition:transform .3s cubic-bezier(.16,1,.3,1),background .3s,box-shadow .3s,border-color .3s;
 }
-.btn-primary{background:var(--petrol);color:#04202a;border-color:var(--petrol);font-weight:700}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(18,160,188,.35)}
-.btn-ghost:hover{background:rgba(255,255,255,.07);border-color:var(--petrol);transform:translateY(-2px)}
+/* il primario ha una velatura del colore dell'app, ma resta vetro */
+.btn-primary{
+  background:linear-gradient(160deg,rgba(18,160,188,.44),rgba(18,160,188,.22));
+  border-color:rgba(120,225,245,.42);color:#fff;font-weight:700;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 10px 30px rgba(18,160,188,.30);
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  background:linear-gradient(160deg,rgba(18,160,188,.58),rgba(18,160,188,.32));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 40px rgba(18,160,188,.42);
+}
+.btn-ghost:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.17);
+  border-color:rgba(255,255,255,.4);
+}
+.btn:active,.demo-btn:active{transform:translateY(0) scale(.985)}
 
 /* --- carta d'imbarco: resta di carta, sul buio spicca ------------- */
 .pass{
@@ -379,21 +413,31 @@ h1 em{font-style:normal;color:var(--petrol)}
 .demo-form input::placeholder{color:#63719A}
 .demo-form select option{background:var(--bg-2);color:var(--text)}
 .demo-btn{
-  width:100%;padding:15px;border-radius:100px;border:none;
-  background:var(--petrol);color:#04202a;font-weight:700;font-size:1rem;
+  width:100%;padding:16px;border-radius:100px;
+  background:linear-gradient(160deg,rgba(18,160,188,.44),rgba(18,160,188,.22));
+  border:1px solid rgba(120,225,245,.42);
+  color:#fff;font-weight:700;font-size:1rem;
   font-family:var(--sans);cursor:pointer;
-  transition:transform .2s,box-shadow .2s,opacity .2s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.42),0 10px 30px rgba(18,160,188,.28);
+  transition:transform .3s cubic-bezier(.16,1,.3,1),background .3s,box-shadow .3s;
 }
-.demo-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 30px rgba(18,160,188,.35)}
+.demo-btn:hover:not(:disabled){
+  transform:translateY(-2px);
+  background:linear-gradient(160deg,rgba(18,160,188,.58),rgba(18,160,188,.32));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 16px 40px rgba(18,160,188,.4);
+}
 .demo-btn:disabled{opacity:.55;cursor:progress}
-.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .chip{
-  padding:6px 13px;border-radius:100px;cursor:pointer;
-  border:1px solid var(--line-2);background:transparent;color:var(--muted);
-  font-size:.8rem;font-family:var(--sans);
-  transition:background .2s,color .2s,border-color .2s;
+  padding:8px 15px;border-radius:100px;cursor:pointer;
+  color:var(--text);font-size:.82rem;font-family:var(--sans);
+  transition:transform .25s cubic-bezier(.16,1,.3,1),background .25s,border-color .25s;
 }
-.chip:hover{background:var(--petrol);color:#04202a;border-color:var(--petrol)}
+.chip:hover{
+  transform:translateY(-1px);
+  background:rgba(18,160,188,.30);
+  border-color:rgba(120,225,245,.5);
+}
 
 /* anche il risultato è libero: la lista appare sul buio, senza foglio */
 .demo-out{
@@ -993,7 +1037,6 @@ footer a{color:var(--petrol);text-decoration:none}
 
     let W = 0, H = 0, S = 0, pelo = 0;
     let x = 0, y = 0, vx = 0, vy = 0, rot = 0, vrot = 0, t = 0;
-    let vivo = true;
 
     function misura() {
       const r = hero.getBoundingClientRect();
@@ -1010,7 +1053,14 @@ footer a{color:var(--petrol);text-decoration:none}
     }
 
     function passo() {
-      if (!vivo) return;
+      // il loop non si spegne mai: quando la piscina è fuori schermo
+      // salta solo i calcoli. (Il browser ferma già da sé i frame
+      // quando la scheda va in secondo piano.)
+      const hr = hero.getBoundingClientRect();
+      if (hr.bottom < 0 || hr.top > innerHeight) {
+        requestAnimationFrame(passo);
+        return;
+      }
       t += .016;
 
       // spinta di galleggiamento verso il pelo dell'acqua, con onda
@@ -1097,16 +1147,10 @@ footer a{color:var(--petrol);text-decoration:none}
       }
     });
 
-    // il motore gira solo quando la piscina è sullo schermo
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver((es) => {
-        es.forEach(e => {
-          const prima = vivo;
-          vivo = e.isIntersecting;
-          if (vivo && !prima) requestAnimationFrame(passo);
-        });
-      }, { threshold: .01 }).observe(hero);
-    }
+    // se la scheda torna in primo piano, il loop riparte
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) requestAnimationFrame(passo);
+    });
 
     addEventListener('resize', misura);
     avvia();
