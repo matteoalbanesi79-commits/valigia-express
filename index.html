@@ -577,16 +577,18 @@ h1 em{font-style:normal;color:var(--petrol)}
    luminosa la ripercorre man mano che scorri, e ogni tappa si accende
    al suo passaggio. La quota la calcola il JS in --percorso.        */
 .log{position:relative;padding-left:clamp(24px,4vw,54px)}
+/* la traccia: una linea piena e spessa, non più tratteggiata */
 .log::before{
-  content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;
-  background:repeating-linear-gradient(var(--line-2) 0 6px, transparent 6px 12px);
+  content:"";position:absolute;left:5px;top:8px;bottom:8px;width:4px;
+  border-radius:4px;
+  background:rgba(255,255,255,.16);
 }
-/* la parte già percorsa: piena, luminosa */
+/* la parte già percorsa: piena, luminosa, stesso spessore */
 .log::after{
-  content:"";position:absolute;left:6px;top:8px;width:2px;
-  height:var(--percorso,0%);
-  background:linear-gradient(180deg,var(--petrol-lite),rgba(18,160,188,.35));
-  box-shadow:0 0 12px rgba(18,160,188,.75);
+  content:"";position:absolute;left:5px;top:8px;width:4px;
+  height:var(--percorso,0%);border-radius:4px;
+  background:linear-gradient(180deg,var(--petrol-lite),rgba(18,160,188,.45));
+  box-shadow:0 0 14px rgba(18,160,188,.8);
   transition:height .18s linear;
 }
 .rel{position:relative;padding-bottom:clamp(30px,4vw,48px)}
