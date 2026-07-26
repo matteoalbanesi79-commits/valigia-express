@@ -6,11 +6,45 @@
 <title>Valigia Express — la valigia si fa da sola (quasi)</title>
 <meta name="description" content="App di viaggio che prepara la lista valigia su misura con l'intelligenza artificiale del telefono. Tutto sul dispositivo: niente account, niente abbonamento, niente server.">
 <meta name="theme-color" content="#0B1225">
-<meta property="og:title" content="Valigia Express">
-<meta property="og:description" content="La valigia si fa da sola. Beh, quasi.">
-<meta property="og:image" content="img/og-image.png">
+<link rel="canonical" href="https://matteoalbanesi79-commits.github.io/valigia-express/">
+<meta name="author" content="Matteo Albanesi">
+<meta name="keywords" content="lista valigia, app viaggio, cosa mettere in valigia, packing list, AI on-device, app senza account, valigia express">
+<meta property="og:title" content="Valigia Express — la valigia si fa da sola">
+<meta property="og:description" content="Dici dove vai: il telefono guarda il meteo vero e scrive la lista. Senza account, senza abbonamento, senza server.">
+<meta property="og:image" content="https://matteoalbanesi79-commits.github.io/valigia-express/img/og-image.png">
+<meta property="og:url" content="https://matteoalbanesi79-commits.github.io/valigia-express/">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Valigia Express — la valigia si fa da sola">
+<meta name="twitter:description" content="La lista valigia la scrive l'AI del telefono, col meteo vero. Zero account, zero abbonamento.">
+<meta name="twitter:image" content="https://matteoalbanesi79-commits.github.io/valigia-express/img/og-image.png">
 <link rel="icon" href="img/icon.png">
+
+<!-- Dati strutturati: dicono a Google che questa è un'app, non una
+     pagina qualsiasi. Aiuta a comparire nei risultati come scheda. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Valigia Express",
+  "applicationCategory": "TravelApplication",
+  "operatingSystem": "iOS 26+, Android 8+",
+  "description": "App di viaggio che prepara la lista valigia su misura con l'intelligenza artificiale del telefono, usando il meteo reale della destinazione. Funziona senza account, senza abbonamento e senza server.",
+  "url": "https://matteoalbanesi79-commits.github.io/valigia-express/",
+  "inLanguage": "it",
+  "author": { "@type": "Person", "name": "Matteo Albanesi" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+  "featureList": [
+    "Lista valigia generata dall'AI on-device",
+    "Meteo reale della destinazione",
+    "Scanner della carta d'imbarco",
+    "Mappa del viaggio",
+    "Traduttore offline",
+    "Passaporto con i timbri dei viaggi"
+  ]
+}
+</script>
 
 <style>
 /* ============================================================
@@ -634,6 +668,42 @@ footer{padding:clamp(40px,7vh,90px) var(--edge) 60px;text-align:center;font-size
 footer .mono{color:rgba(234,238,247,.3);margin-bottom:14px}
 footer a{color:var(--petrol);text-decoration:none}
 
+/* --- MOMENTI: le frasi che si compongono da sole ------------------
+   Tra una scena e l'altra la pagina si svuota e resta una frase sola,
+   che si scrive parola per parola mentre scorri. Regola presa dalle
+   linee guida di movimento: frasi corte (max ~8 parole), mai
+   paragrafi interi, e niente parallasse sul testo da leggere.      */
+.momento{
+  min-height:96svh;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:clamp(60px,10vh,120px) var(--edge);
+  position:relative;
+}
+.momento p{
+  font-size:clamp(2.1rem,7.2vw,5.6rem);
+  line-height:1.04;letter-spacing:-.045em;font-weight:800;
+  max-width:16ch;color:#fff;
+}
+.momento .w{
+  display:inline-block;
+  opacity:.10;filter:blur(5px);
+  transform:translateY(.32em);
+  transition:opacity .5s cubic-bezier(.16,1,.3,1),
+             filter .5s cubic-bezier(.16,1,.3,1),
+             transform .5s cubic-bezier(.16,1,.3,1);
+}
+.momento .w.on{opacity:1;filter:blur(0);transform:none}
+.momento .hi{color:var(--petrol-lite)}
+/* una riga sottile che accompagna la frase */
+.momento .sotto{
+  margin-top:26px;font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+  opacity:0;transition:opacity .8s .3s;
+}
+.momento.visto .sotto{opacity:1}
+@media(prefers-reduced-motion:reduce){
+  .momento .w{opacity:1;filter:none;transform:none}
+}
+
 /* --- GRANA DI PELLICOLA ------------------------------------------
    Un velo di rumore su tutta la pagina: le foto smettono di sembrare
    "digitali" e prendono un'aria da pellicola. Il rumore è disegnato
@@ -753,6 +823,14 @@ footer a{color:var(--petrol);text-decoration:none}
 </section>
 
 <!-- ============ DEMO INTERATTIVA ============ -->
+<!-- ============ MOMENTO 1 ============ -->
+<section class="momento">
+  <div>
+    <p data-frase>Ogni viaggio comincia con <span class="hi">una lista</span>.</p>
+    <div class="sotto">E questa se la scrive da sola</div>
+  </div>
+</section>
+
 <section id="demo">
   <div class="wrap">
     <div class="sec-head rv">
@@ -873,6 +951,14 @@ footer a{color:var(--petrol);text-decoration:none}
         </figure>
       </div>
     </div>
+</section>
+
+<!-- ============ MOMENTO 2 ============ -->
+<section class="momento">
+  <div>
+    <p data-frase>Nessun account. Nessun server. <span class="hi">Nessuno che guarda</span>.</p>
+    <div class="sotto">Il viaggio resta sul tuo telefono</div>
+  </div>
 </section>
 
 <!-- ============ NUMERI ============ -->
@@ -1290,6 +1376,49 @@ footer a{color:var(--petrol);text-decoration:none}
     addEventListener('resize', moveScenes);
     moveScenes();
   }
+
+  /* ---------- i momenti: frasi che si compongono da sole -----------
+     Ogni parola è avvolta in uno <span> e si accende quando la frase
+     entra nello schermo, una dopo l'altra. Niente librerie: divido il
+     testo a mano, così restano parole vere per chi legge la pagina
+     con uno screen reader o senza JavaScript.                        */
+  document.querySelectorAll('[data-frase]').forEach(frase => {
+    // avvolgo ogni parola, tenendo intatti gli <span class="hi">
+    const avvolgi = (nodo) => {
+      [...nodo.childNodes].forEach(n => {
+        if (n.nodeType === 3) {                       // testo puro
+          const pezzi = n.textContent.split(/(\s+)/);
+          const frag = document.createDocumentFragment();
+          pezzi.forEach(p => {
+            if (!p.trim()) { frag.appendChild(document.createTextNode(p)); return; }
+            const s = document.createElement('span');
+            s.className = 'w'; s.textContent = p;
+            frag.appendChild(s);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) avvolgi(n);
+      });
+    };
+    if (!reduce) avvolgi(frase);
+
+    const parole = [...frase.querySelectorAll('.w')];
+    const sezione = frase.closest('.momento');
+    if (!parole.length) return;
+
+    const componi = () => {
+      const r = sezione.getBoundingClientRect();
+      // comincia quando la frase entra davvero in vista e finisce
+      // quando è al centro: così la si vede comporsi
+      const q = (innerHeight * .78 - r.top) / (innerHeight * .52);
+      const quante = Math.round(Math.min(1, Math.max(0, q)) * parole.length);
+      parole.forEach((p, i) => p.classList.toggle('on', i < quante));
+      sezione.classList.toggle('visto', quante >= parole.length);
+    };
+    if (reduce) { parole.forEach(p => p.classList.add('on')); sezione.classList.add('visto'); return; }
+    addEventListener('scroll', componi, { passive: true });
+    addEventListener('resize', componi);
+    componi();
+  });
 
   /* ---------- la linea del tempo che si percorre -------------------
      Mentre scorri, la linea luminosa avanza fino al punto in cui sei
