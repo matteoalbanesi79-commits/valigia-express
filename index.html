@@ -6,6 +6,13 @@
 <title>Valigia Express — la valigia si fa da sola (quasi)</title>
 <meta name="description" content="App di viaggio che prepara la lista valigia su misura con l'intelligenza artificiale del telefono. Tutto sul dispositivo: niente account, niente abbonamento, niente server.">
 <meta name="theme-color" content="#0B1225">
+
+<!-- SICUREZZA — dice al browser cosa può caricare ed eseguire. Se
+     qualcuno riuscisse a iniettare uno script esterno, il browser lo
+     bloccherebbe: qui è tutto locale tranne la chiamata al meteo. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api.open-meteo.com https://geocoding-api.open-meteo.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
 <link rel="canonical" href="https://matteoalbanesi79-commits.github.io/valigia-express/">
 <meta name="author" content="Matteo Albanesi">
 <meta name="keywords" content="lista valigia, app viaggio, cosa mettere in valigia, packing list, AI on-device, app senza account, valigia express">
@@ -666,6 +673,24 @@ h1 em{font-style:normal;color:var(--petrol)}
 /* il footer nasce dal buio in cui muore la scena finale: nessuno stacco */
 footer{padding:clamp(40px,7vh,90px) var(--edge) 60px;text-align:center;font-size:.85rem;color:var(--muted)}
 footer .mono{color:rgba(234,238,247,.3);margin-bottom:14px}
+/* l'informativa: chiusa di default, si apre a chi la cerca */
+.legale{max-width:62ch;margin:26px auto 0;text-align:left}
+.legale summary{
+  cursor:pointer;text-align:center;color:var(--muted);
+  font-size:.82rem;padding:8px;list-style:none;
+}
+.legale summary::-webkit-details-marker{display:none}
+.legale summary::after{content:" ▾";opacity:.6}
+.legale[open] summary::after{content:" ▴"}
+.legale summary:hover{color:var(--petrol)}
+.legale > div{
+  margin-top:12px;padding:20px;border-radius:16px;
+  background:rgba(255,255,255,.04);
+  display:flex;flex-direction:column;gap:12px;
+  font-size:.84rem;line-height:1.65;
+}
+.legale strong{color:var(--text)}
+.legale a{color:var(--petrol)}
 footer a{color:var(--petrol);text-decoration:none}
 
 /* --- MOMENTI: le frasi che si compongono da sole ------------------
@@ -995,7 +1020,7 @@ footer a{color:var(--petrol);text-decoration:none}
           <li>Aprilo e conferma l'installazione</li>
           <li>Fatto — nessuna scadenza</li>
         </ol>
-        <a class="btn btn-primary" href="https://github.com/matteoalbanesi79-commits/valigia-express/releases/download/android-v1.1/ValigiaExpress-android.apk" style="align-self:flex-start">Scarica .apk (~73 MB)</a>
+        <a class="btn btn-primary" href="https://github.com/matteoalbanesi79-commits/valigia-express/releases/download/android-v1.1/ValigiaExpress-android.apk" style="align-self:flex-start" rel="noopener noreferrer">Scarica .apk (~73 MB)</a>
         <p class="note">La lista generata arriva con Gemini Nano, che gira solo su
         Pixel 8+ e Galaxy S24+. Il resto funziona ovunque.</p>
       </div>
@@ -1109,15 +1134,38 @@ footer a{color:var(--petrol);text-decoration:none}
     <h3>I tuoi viaggi sono affari tuoi.</h3>
     <p>Non c'è niente da accettare, niente da tracciare, nessun "continua con
     Google". Il viaggio resta tra te e il tuo telefono — letteralmente.
-    Anche questo sito non ha cookie né statistiche.</p>
+    Anche questo sito non ha cookie né statistiche. L'unica cosa che esce
+    da qui è la città che scrivi nella prova, per chiedere il meteo.</p>
   </div>
 </section>
 
 <footer>
   <p class="mono">Valigia Express · VE 026</p>
-  <p>Fatta con ☕️ e i modelli on-device · Meteo di <a href="https://open-meteo.com">Open-Meteo</a></p>
-  <p style="margin-top:6px">Foto di viaggio: <a href="https://unsplash.com">Unsplash</a> · Screenshot dell'app</p>
-  <p style="margin-top:6px">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
+  <p>Fatta con ☕️ e i modelli on-device · Meteo di <a href="https://open-meteo.com" rel="noopener noreferrer">Open-Meteo</a></p>
+  <p style="margin-top:6px">Foto di viaggio: <a href="https://unsplash.com" rel="noopener noreferrer">Unsplash</a> · Screenshot dell'app</p>
+  <details class="legale">
+    <summary>Privacy e dati — in due righe</summary>
+    <div>
+      <p><strong>Questo sito.</strong> Non usa cookie, non ha statistiche, non
+      c'è nessun account. Non salviamo niente di chi passa di qui.</p>
+      <p><strong>La prova della valigia.</strong> Quando premi "Prepara la
+      valigia", la città che hai scritto viene mandata a
+      <a href="https://open-meteo.com/en/terms" rel="noopener noreferrer">Open-Meteo</a>
+      per sapere che tempo fa. Come in ogni collegamento a un sito, Open-Meteo
+      vede anche il tuo indirizzo IP. Non usiamo quei dati per nient'altro e non
+      li conserviamo. Se non premi il bottone, non parte nessuna richiesta.</p>
+      <p><strong>L'app.</strong> Genera le liste sul telefono, senza mandare
+      niente a nessuno. L'unica connessione è al meteo, come qui. I tuoi viaggi,
+      le abitudini e i timbri restano sul dispositivo: se disinstalli l'app,
+      spariscono con lei.</p>
+      <p><strong>Il download per Android</strong> è ospitato su GitHub, che
+      registra le richieste secondo la
+      <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener noreferrer">sua informativa</a>.</p>
+      <p>Per qualsiasi domanda o richiesta sui tuoi dati puoi scrivere a
+      <a href="mailto:matteoalbanesi79@gmail.com">matteoalbanesi79@gmail.com</a>.</p>
+    </div>
+  </details>
+  <p style="margin-top:14px">© 2026 Matteo Albanesi · Buon viaggio, ovunque tu vada 🧳</p>
 </footer>
 
 <script>
@@ -1509,11 +1557,20 @@ footer a{color:var(--petrol);text-decoration:none}
   btn.addEventListener('click', go);
   inCity.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
 
+  /* SICUREZZA — neutralizza i caratteri che il browser leggerebbe come
+     codice. Va applicata a TUTTO ciò che non scriviamo noi: quello che
+     digita chi visita, e quello che risponde il servizio meteo.
+     Senza questa, scrivere <img onerror=...> nel campo destinazione
+     esegue davvero quel codice nella pagina. */
+  const esc = (v) => String(v).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+
   function loading(msg) {
-    out.innerHTML = `<div class="demo-empty"><div class="spinner"></div><p>${msg}</p></div>`;
+    out.innerHTML = `<div class="demo-empty"><div class="spinner"></div><p>${esc(msg)}</p></div>`;
   }
   function oops(msg) {
-    out.innerHTML = `<div class="demo-empty"><span class="big">🤔</span><p>${msg}</p></div>`;
+    out.innerHTML = `<div class="demo-empty"><span class="big">🤔</span><p>${esc(msg)}</p></div>`;
   }
 
   async function go() {
@@ -1555,25 +1612,29 @@ footer a{color:var(--petrol);text-decoration:none}
     const nome = [place.name, place.country].filter(Boolean).join(', ');
     const emoji = wx.pioggia > 55 ? '🌧️' : wx.media >= 26 ? '☀️' : wx.media <= 8 ? '🧊' : '⛅️';
 
+    // i numeri li forzo a numero, i testi li ripulisco: niente di ciò
+    // che arriva da fuori finisce nella pagina così com'è
+    const n = (v) => Number(v) || 0;
+
     let html = `
       <div class="wx">
-        <div class="t">${emoji} ${wx.media}°</div>
+        <div class="t">${emoji} ${n(wx.media)}°</div>
         <div>
-          <div class="where">${nome}</div>
-          <div class="mono">Min ${wx.min}° · Max ${wx.max}° · Pioggia ${wx.pioggia}%</div>
+          <div class="where">${esc(nome)}</div>
+          <div class="mono">Min ${n(wx.min)}° · Max ${n(wx.max)}° · Pioggia ${n(wx.pioggia)}%</div>
         </div>
-        <div class="note">${frase(wx, days)}</div>
+        <div class="note">${esc(frase(wx, days))}</div>
       </div>
       <div class="cats">`;
 
     let i = 0;
     for (const [nomeCat, items] of Object.entries(cats)) {
-      html += `<div class="cat"><h4>${nomeCat}</h4><ul>`;
-      for (const it of items) html += `<li style="animation-delay:${(i++ * 22)}ms">${it}</li>`;
+      html += `<div class="cat"><h4>${esc(nomeCat)}</h4><ul>`;
+      for (const it of items) html += `<li style="animation-delay:${n(i++) * 22}ms">${esc(it)}</li>`;
       html += `</ul></div>`;
     }
     html += `</div>
-      <p class="demo-foot">Meteo reale di Open-Meteo per i prossimi ${wx.giorni} giorni.
+      <p class="demo-foot">Meteo reale di Open-Meteo per i prossimi ${n(wx.giorni)} giorni.
       Questa è la versione ridotta: nell'app la lista la scrive l'AI del telefono,
       che tiene conto anche dei tuoi gusti e delle tue abitudini.</p>`;
 
